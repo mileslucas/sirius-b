@@ -11,10 +11,10 @@ numpy = "*"
 scipy = "*"
 matplotlib = "*"
 vip-hci = "*"
-photutils = "*"
-ccdproc = "*"
 pandas = "*"
 pyds9 = "*"
+hciplot = "*"
+tqdm = "*"
 
 [requires]
 python_version = "3.7"
