@@ -1,0 +1,15 @@
+name = "sirius-b"
+authors = ["Miles Lucas <mdlucas@hawaii.edu>"]
+
+[deps]
+CCDReduction = "b790e538-3052-4cb9-9f1f-e05859a455f5"
+IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
+ProgressLogging = "33c8b6b6-d38a-422a-b730-caa89a2f386c"
+PythonCall = "6099a3de-0909-46bc-b1f4-468b9a2dfc0d"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+
+[compat]
+CCDReduction = "0.2.0"
+ProgressLogging = "0.1.4"
+PythonCall = "0.2.1"
+julia = "1.6"
