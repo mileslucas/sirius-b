@@ -448,3 +448,4 @@ Manifest.toml
 
 *.fits*
 data
+.venv
