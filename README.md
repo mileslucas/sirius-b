@@ -2,17 +2,18 @@
 
 PI: Michael Bottom, Institute for Astronomy
 
+
 ## Setup
 
-To set up, I used [pipenv](https://github.com/pypa/pipenv) for python virtual environmenting. To loosely recreate my environment, simply
+To set up, I used [virtualenv](https://github.com/pypa/pipenv) for the python requirements.
 
-    $ pipenv install
+    $ pip install -r requirements.txt
 
-To exactly replicate my environment from Pipfile.lock 
+Then, to set up the Julia requirements
 
-    $ pipenv install --deploy
+    $ julia --project=@. -e 'using Pkg; Pkg.instantiate()'
 
 ## Usage
 
-The processing and analysis code is all located in `notebooks`. The order is `preprocessing` > `adi` > `photometry`. Some helper library code is located in `src`. Of particular note, to make sure your paths are set up correctly, take a look at `src/paths.py`. 
+The processing and analysis code is all located in `notebooks`. The order is `preprocessing` > `psf_subtraction` > `analysis`. Some helper library code is located in `src`.
 
