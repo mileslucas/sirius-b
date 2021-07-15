@@ -52,5 +52,6 @@ function parallactic_angles(filelist; latitude=19.82636)
 end
 
 include("fitting.jl")
+include("badpix.jl")
 
 end

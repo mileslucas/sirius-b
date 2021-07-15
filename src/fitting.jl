@@ -27,9 +27,12 @@ end
 
 Fit a 2D Gaussian PSF profile to `frame` centered around `guess` and return the best fitting parameters `[x, y, FWHM, log(Amp)]`.
 """
-function gaussian_fit(frame::AbstractMatrix{T}, guess=(256.5, 256.5)) where T
+function gaussian_fit(frame::AbstractMatrix{T}, guess=(256.5, 256.5); sub_size=100) where T
     # crop target view for speed
-    target = HCIToolbox.cropview(frame, 270)
+    half_size = sub_size ÷ 2
+    indsx = round(Int, guess[1]-half_size):round(Int, guess[1]+half_size)
+    indsy = round(Int, guess[2]-half_size):round(Int, guess[2]+half_size)
+    target = @view frame[indsy, indsx]
     X0 = T[guess..., 7.5, log(maximum(target))]
     res = optimize(P -> loss(P, target), X0, LBFGS(); autodiff=:forward)
     # turn best-fit location into index
@@ -41,8 +44,8 @@ end
 
 Fit a 2D Gaussian PSF profile to `frame` centered around `guess` and return the offset from the center. Combine this with `HCIToolbox.shift_frame` for registering frames.
 """
-function gaussian_fit_offset(frame::AbstractMatrix{T}, guess=(256.5, 256.5)) where T
-    Xbest = gaussian_fit(frame, guess)
+function gaussian_fit_offset(frame::AbstractMatrix{T}, args...; kwargs...) where T
+    Xbest = gaussian_fit(frame, args...; kwargs...)
     dx = 256.5 - Xbest[1]
     dy = 256.5 - Xbest[2]
     return dx, dy
