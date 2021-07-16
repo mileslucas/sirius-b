@@ -3,6 +3,7 @@ authors = ["Miles Lucas <mdlucas@hawaii.edu>"]
 
 [deps]
 ADI = "904a6c7d-4c1b-562f-9573-ab2e7e1c7946"
+AstroTime = "c61b5328-d09d-5e37-a9a8-0eb41c39009c"
 CCDReduction = "b790e538-3052-4cb9-9f1f-e05859a455f5"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
@@ -13,6 +14,7 @@ IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
 ImageFiltering = "6a3955dd-da59-5b1f-98d4-e7296123deb5"
 InvertedIndices = "41ab1584-1d38-5bbf-9106-f11c6c58b48f"
 LossFunctions = "30fc2ffe-d236-52d8-8643-a9d8f7c094a7"
+Measurements = "eff96d63-e80a-5855-80a2-b1b0885c5ab7"
 Optim = "429524aa-4258-5aef-a3af-852621145aeb"
 PSFModels = "9ba017d1-7760-46cd-84a3-1e79e9ae9ddc"
 PlotUtils = "995b91a9-d308-5afd-9ec6-746e21dbc043"

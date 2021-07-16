@@ -11,9 +11,11 @@ scipy = "^1.7"
 astropy = "^4.2"
 lacosmic = "^0.1.1"
 matplotlib = "^3.4"
-hciplot = "^0.1.8"
+hciplot = {git = "https://github.com/mileslucas/hciplot", rev = "patch-1"}
 scikit-image = "^0.18"
 opencv-python = "^4.5.3"
+orbitize = "^1.15.4"
+proplot = "^0.7.0"
 
 [tool.poetry.dev-dependencies]
 
