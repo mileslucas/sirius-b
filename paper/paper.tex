@@ -3,6 +3,12 @@
 \let\tablenum\relax
 \usepackage[output-exponent-marker = \text{e}]{siunitx}
 
+
+\DeclareSIUnit\parsec{pc}
+\DeclareSIUnit\au{AU}
+\DeclareSIUnit\mj{M_J}
+\DeclareSIUnit\year{yr}
+
 %% Define new commands here
 \newcommand\latex{La\TeX}
 
@@ -12,6 +18,9 @@
 \begin{document}
 
 \title{A Search for Circumstellar Companions Around Nearby White Dwarf Sirius b}
+
+\shorttitle{A Search for Circumstellar Companions around Sirius b}
+\shortauthors{Lucas et al.}
 
 \correspondingauthor{Miles Lucas}
 \email{mdlucas@hawaii.edu}
@@ -33,28 +42,67 @@
 
 \end{abstract}
 
-\section{Introduction}
+\section{Introduction} \label{sec:intro}
 
-Directly imaging exoplanets is a powerful method in exoplanet science which explores a parameter space very complementary to the popular transit photometry and radial velocity methods. Two of the key parameters that limit direct imaging are \textit{contrast}, the relative brightness between the host star and the companion, and \textit{separation}, due to the diffraction and seeing limited nature of astronomy, especially the effects of Earth's atmosphere above ground-based telescopes. Sirius B is an enticing prospect for a direct imaging search because it is very close, only \SI{2.7}{pc} away, which allows probing very close-in orbital separations, down to a few AU. Also, due to the strong cooling of white dwarfs, the luminosity will be 3-4 orders of magnitude less than its main sequence progenitor. This means current ground-based instrumetns can probe 3-4 orders of magnitude deeper into the planetary mass space.
+Very little is known about the evolution of planetary systems beyond the main-sequence lifetime of their host stars. Theoretical calculations show that planets can survive the red giant and asymptotic giant stages \citep{burleigh_imaging_2002,jura_pollution_2008,nordhaus_orbits_2013}, and results from radial velocity and transit surveys suggest extrasolar planets are prevalent throughout the Milky Way \citep{cumming_keck_2008}. However, only one planetary mass object has been detected around a white dwarf (WD) with imaging \citep[WD 0806-661;][]{luhman_discovery_2011}.
 
-Any potential companion around an evolved star must have survived multiple stages of stellar evolution, notably the red giant phase and the asymptotic giant phase. In the red giant phase, the main sequence star inflates in a shell around the collapsing inert core. Any planet within the Roche limit of the expanding star will be engulfed, polluting the stellar atmosphere. In the asymptotic giant phase, the star will be blowing off mass in shells which can become highly ionized by strong ultraviolet and X-ray emission from the star, which has consequences for planetary atmospheres. By the end of the star's evolution, as it enters the white dwarf cooling sequence, it is expected that a planet beyond a critical separation (to escape engulfment during the red giant phase) will typically migrate outward as a function of the mass loss of the star.
+Directly imaging exoplanets is a powerful method in exoplanet science which explores a parameter space very complementary to the popular transit photometry and radial velocity methods. The red giant stage has cleared planets within a few \si{au} greatly lowering the transit probability. White dwarfs have very few spectral lines to make high-precision radial velocity measurements from spectral lines. Imaging, though, benefits from the orbital expansion of the planet, and the cooling of the white dwarf greatly reduces the contrast between them \citep{burleigh_imaging_2002,gould_finding_2008}. The Degenerate Objects around Degenerate Objects (DODO) survey observed 29 white dwarfs with Gemini/NIRI and VLT/ISAAC and provided upper limits around $\sim$\SI{8}{\mj} beyond \SI{35}{\au} \citep{hogan_dodo_2009}.
 
-\section{Observations}
+In this work we study the closest white dwarf to the Sun, Sirius b, and provide upper mass limits based on our observations in the near-infrared. \autoref{sec:obs} describes our target and observing strategy, \autoref{sec:analysis} describes the processing and analysis techniques used, \autoref{sec:results} describes our results and we conclude with \autoref{sec:conclusion}.
 
-Sirius is the closest star system to the Sun at \SI{2.7}{pc} away. The host, Sirius a is infamously one of the brightest stars in the sky, with a K-band magnitude of -1.35. Sirius b has a well-studied orbit
+\section{Observations} \label{sec:obs}
 
-\section{Analysis}
+Sirius is the closest star system to the Sun at \SI{2.7}{\parsec} away, consisting of an A1Vm star (a) and a WD with an age around \SI{225}{\mega\year} \citep{bond_sirius_2017,collaboration_gaia_2018}. There are no known planets around either star, and using constrained 3-body numerical simulations a potential companion around Sirius b would only be stable with a \SI{1.79}{\year} orbit, which corresponds to a circular orbit with \SI{1.5}{\au} separation. Sirius b has been studied in the \SI{10}{\micro\meter} regime recently by \cite{pathak_high_2021}, who achieve \SIrange[]{1.8}{3.5}{\mj} upper limits within 2 arcseconds.
 
-For each epoch
+We targeted Sirius b directly using Keck/NIRC2 in Lp-band across three epochs in 2020 \autoref{tbl:obs}. Due to the high proper motion and reasonable orbital motion, we started by calculating the projected offset and position angle from Sirius a based on the orbital parameters from \cite{bond_sirius_2017}. We first slewed to Sirius a, which is easy to lock onto due to its brightness \citep[-1.35 K-band magnitude;][]{bonnet-bidaud_adonis_2008}. We found that Sirius b is too dim \citep[9.01 K-band magnitude;][]{bonnet-bidaud_adonis_2008} for the adaptive optics (AO) performance necessary for coronagraphy and that the scattered light from Sirius a was detrimental to closing the AO loop when using Sirius b as a natural guide star (NGS) anyways. Therefore, we employed a unique off-axis solution, using a narrow laser-line filter for the wavefront sensor using Sirius a as the NGS and offsetting to Sirius b manually.
+
+The scattered light from Sirius a is so strong, in fact, that radial diffraction spikes from the Keck II secondary mirror support structure are still present in the Sirius b frames, which reduced our overall observing efficiency due to discarding these frames. An example of such a diffraction spike is shown in \autoref{fig:spike}.
+
+\begin{figure}
+    \centering
+    \epsscale{1}
+    \plotone{spike}
+    \caption{Calibrated science frame of Sirius b from 2020-02-04 epoch showing the strong scattered light effects from Sirius a.}
+    \label{fig:spike}
+\end{figure}
 
 
-% \acknowledgments
+\begin{deluxetable*}{ccccc}
+    % \tabletypesize{\scriptsize}
+    \tablecaption{Observing parameters for the three epochs of data. All observations were carried out using the NIRC2 Lp-band filter. Observation time is based on the frames that were selected for processing.
+    \label{tbl:obs}}
+    \tablehead{
+        \colhead{Date observed} & 
+        \colhead{Observation time (hr)} & 
+        \colhead{Seeing (arcsec)} & 
+        \colhead{Temp (\textdegree C)} & 
+        \colhead{PWV (mm)}
+    }
+    \startdata
+    2020-02-04 & 1.44 &  &  &  \\
+    2020-11-21 & 2.91 &  &  &  \\
+    2020-11-28 & 2.44 &  &  &  \\
+    \enddata
+\end{deluxetable*}
 
-% \software{
-% astropy \citep{2013A&A...558A..33A,2018AJ....156..123A},
-% numpy \citep{harris2020array},
-% scikit-image \citep{2014arXiv1407.6245V},
-% }
+\section{Analysis} \label{sec:analysis}
+
+\section{Results} \label{sec:results}
+
+\section{Conclusions} \label{sec:conclusion}
+
+
+\begin{acknowledgments}
+
+\end{acknowledgments}
+
+\software{
+ADI.jl \citep{lucas_adijl_2020},
+astropy \citep{collaboration_astropy_2013,astropy_collaboration_astropy_2018},
+Julia \citep{bezanson_julia_2017},
+numpy \citep{harris_array_2020},
+scikit-image \citep{walt_scikit-image_2014},
+}
 
 \bibliography{references}{}
 \bibliographystyle{aasjournal}
