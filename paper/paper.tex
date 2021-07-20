@@ -67,25 +67,31 @@ The scattered light from Sirius a is so strong, in fact, that radial diffraction
 \end{figure}
 
 
-\begin{deluxetable*}{ccccc}
+\begin{deluxetable*}{ccccccc}
     % \tabletypesize{\scriptsize}
     \tablecaption{Observing parameters for the three epochs of data. All observations were carried out using the NIRC2 Lp-band filter. Observation time is based on the frames that were selected for processing.
     \label{tbl:obs}}
     \tablehead{
-        \colhead{Date observed} & 
+        \colhead{Date observed} &
+        \colhead{Sirius a offset (")} &
+        \colhead{Sirius a PA (\textdegree)} &
         \colhead{Observation time (hr)} & 
         \colhead{Seeing (arcsec)} & 
         \colhead{Temp (\textdegree C)} & 
         \colhead{PWV (mm)}
     }
     \startdata
-    2020-02-04 & 1.44 &  &  &  \\
-    2020-11-21 & 2.91 &  &  &  \\
-    2020-11-28 & 2.44 &  &  &  \\
+    2020-02-04 & 11.20 & 67.90 & 1.44 &  &  &  \\
+    2020-11-21 & 11.27 & 66.42 & 2.91 &  &  &  \\
+    2020-11-28 & 11.27 & 66.38 & 2.44 &  &  &  \\
     \enddata
 \end{deluxetable*}
 
 \section{Analysis} \label{sec:analysis}
+
+For each epoch we applied a flat correction using calibration frames captured during observing. We also removed bad pixels using a combination of L.A.Cosmic \citep{dokkum_cosmic-ray_2001} and an adaptive sigma-clipping algorithm. We finally remove sky background using a high-pass median filter. Each frame is co-registered and aligned with the center of the FOV and lastly cropped to the inner 200 pixels. With the pixel scale of \SI{10}{mas\per px} the crop corresponds to a maximum separation of \SI{2.7}{\au}. We also measure the parallactic angle of each frame, including corrections for distortion effects following \cite{yelda_improving_2010}.
+
+We apply the technique of angular differential imaging \citep[ADI;][]{marois_angular_2006} where we disable the field rotator and allow the FOV to rotate throughout the night as Earth rotates. This apparent rotation isolates systematic noise from the telescope, which includes the point-spread function (PSF). By modeling and subtracting the PSF before derotating the frames to a common direction, potential companion signal is preserved since it does not appear stationary in the 
 
 \section{Results} \label{sec:results}
 

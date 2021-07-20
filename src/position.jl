@@ -5,13 +5,15 @@ in addition to the fact we were using Sirius A as the AO NGS and targeting
 Sirius B in an off-axis manner.
 =#
 
+using AstroAngles
 using AstroLib
+using Dates
 using Measurements
 using SkyCoords
 using Unitful, UnitfulAstro
 
 # http://simbad.u-strasbg.fr/simbad/sim-basic?Ident=sirius+a&submit=SIMBAD+search
-sirius = ICRSCoords("06:45:08.91728", "-16:42:48.0171")
+sirius = ICRSCoords(hms"06:45:08.91728", dms"-16:42:48.0171")
 parallax = 379.21e-3 #mas
 distance = 1 / parallax # pc
 
@@ -41,17 +43,29 @@ r(t) = a * (1 - e^2) / (1 + e * cos(ν(t)))
 pa(t) = Ω + atan(tan(ν(t) + ω) * cos(i))
 sep(t) = r(t) * cos(ν(t) + ω) / cos(pa(t) - Ω)
 
-t = 2020.8876712328767123u"yr" # time for 11/20/2020
-t = 2020.9094227697923797u"yr" # time for 11/27/2020
-ρ_arcsec = sep(t)
-θ = pa(t)
+year_val(epoch) = year_val(Date(epoch))
+year_val(epoch::TimeType) = year(epoch) + (dayofyear(epoch) - 1) / daysinyear(epoch)
 
-ρ = deg2rad(ρ_arcsec / 3600)
-θ_deg = rad2deg(θ)
+for epoch in ["2020-02-04", "2020-11-21", "2020-11-28"]
+    t = year_val(epoch)u"yr"
+    ρ = sep(t)
+    θ = pa(t) |> rad2deg
 
 
-println("ρ= $ρ_arcsec\", θ= $(θ_deg)°")
-println("offset: $(ρ_arcsec .* sincosd(θ_deg))")
+    @info epoch=epoch t ρ θ
+end
+
+# t = 2020.8876712328767123u"yr" # time for 11/20/2020
+# t = 2020.9094227697923797u"yr" # time for 11/27/2020
+# ρ_arcsec = sep(t)
+# θ = pa(t)
+
+# ρ = deg2rad(ρ_arcsec / 3600)
+# θ_deg = rad2deg(θ)
+
+
+# println("ρ= $ρ_arcsec\", θ= $(θ_deg)°")
+# println("offset: $(ρ_arcsec .* sincosd(θ_deg))")
 
 
 # sirius_b = offset(sirius, Measurements.value(ρ), Measurements.value(θ))
