@@ -89,7 +89,15 @@ The scattered light from Sirius a is so strong, in fact, that radial diffraction
 
 \section{Analysis} \label{sec:analysis}
 
-For each epoch we applied a flat correction using calibration frames captured during observing. We also removed bad pixels using a combination of L.A.Cosmic \citep{dokkum_cosmic-ray_2001} and an adaptive sigma-clipping algorithm. We finally remove sky background using a high-pass median filter. At this point frames were manually filtered to remove bad frames, especially those with diffraction spikes like in \autoref{fig:spike}. Then, each good frame is co-registered using cross-correlations \citep{guizar-sicairos_efficient_2008} and aligned with the center of the FOV. Lastly the frames were cropped to the inner 200 pixels and stacked into data cubes for each epoch. With the pixel scale of \SI{10}{mas\per px} the crop corresponds to a maximum separation of \SI{2.7}{\au}. We also measure the parallactic angle of each frame, including corrections for distortion effects following \cite{yelda_improving_2010}.
+For each epoch we applied a flat correction using calibration frames captured during observing. We also removed bad pixels using a combination of L.A.Cosmic \citep{dokkum_cosmic-ray_2001} and an adaptive sigma-clipping algorithm. We finally remove sky background using a high-pass median filter. At this point frames were manually filtered to remove bad frames, especially those with diffraction spikes like in \autoref{fig:spike}. Then, each good frame is co-registered using cross-correlations \citep{guizar-sicairos_efficient_2008} and aligned with the center of the FOV. Lastly the frames were cropped to the inner 200 pixels and stacked into data cubes for each epoch. With the pixel scale of \SI{10}{mas\per px} the crop corresponds to a maximum separation of \SI{2.7}{\au}. We also measure the parallactic angle of each frame, including corrections for distortion effects following \cite{yelda_improving_2010}. For each epoch, we measure the full-width at half-maximum (FWHM) of the stellar PSF by fitting a bivariate Gaussian model to the median frame from each data cube (an example of one is shown in \autoref{fig:psf}).
+
+\begin{figure}
+    \centering
+    \epsscale{1}
+    \plotone{psf}
+    \caption{The median frame from the 2020-11-21 epoch showing the instrumental PSF. The inner core has a FWHM of $\sim$\SI{76}{mas}. The speckle pattern can be seen in the blobs surrounding the first ring, with roughly 6-way radial symmetry corresponding to the hexagonal shapes of the segmented mirrors.}
+    \label{fig:psf}
+\end{figure}
 
 During observing we applied the technique of angular differential imaging \citep[ADI;][]{marois_angular_2006} where we disable the field rotator and allow the FOV to rotate throughout the night along with Earth. The point-spread function (PSF), which is an instrumental effect, will not appear to rotate while any potential companion will appear to rotate. This allows modeling and subtracting the PSF with less probability for subtracting companion signal. After subtraction, the frames are derotated by their parallactic angle and combined with a weighted sum \citep{bottom_noise-weighted_2017}, which reduces the pixel-to-pixel noise as the number of frames in the data cube increases.
 
@@ -101,7 +109,34 @@ Another metric we calculate for some of the algorithms is the contrast curve, wh
 
 \section{Results} \label{sec:results}
 
-The flat residual images from each epoch are shown in \autoref{fig:residuals}, along with the Gaussian S/N maps and STIM maps. The best performing algorithms for each epoch in terms of sensitivity were median subtraction median subtraction, and PCA subtraction with 2 principal components. For each epoch we determined there was not significant evidence for a companion around Sirius b.
+\begin{figure*}
+    \centering
+    \epsscale{1.1}
+    \plotone{residuals}
+    \caption{The flat residuals of each epoch after PSF subtraction, derotating, and collapsing. The inner full-width at half-maximum (FWHM) is masked out for each frame.}
+    \label{fig:residuals}
+\end{figure*}
+
+\begin{figure*}
+    \centering
+    \epsscale{1.1}
+    \plotone{snr}
+    \caption{The S/N maps for each epoch calculated with Gaussian noise assumptions. The inner full-width at half-maximum (FWHM) is masked out for each map.}
+    \label{fig:snr}
+\end{figure*}
+
+\begin{figure*}
+    \centering
+    \epsscale{1.1}
+    \plotone{stim}
+    \caption{The STIM maps for each epoch calculated from the residual cube. Note that the STIM probability has a typical cutoff threshold of 0.5 for significant detections. The inner full-width at half-maximum (FWHM) is masked out for each map.}
+    \label{fig:stim}
+\end{figure*}
+
+
+The best performing algorithms for each epoch in terms of sensitivity were median subtraction median subtraction, and PCA subtraction with 2 principal components. The flat residual images from each epoch are shown in \autoref{fig:residuals}, along with the Gaussian S/N maps (\autoref{fig:snr}) and STIM maps (\autoref{fig:stim}). For each epoch we determined there was not significant evidence for a companion around Sirius b.
+
+
 
 \section{Conclusions} \label{sec:conclusion}
 
