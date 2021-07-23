@@ -1,6 +1,17 @@
 # Sirius B Data Reduction
 
-PI: Michael Bottom, Institute for Astronomy
+**PI: Michael Bottom, Institute for Astronomy**
+
+## Attribution
+
+
+## Data
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5115225.svg)](https://doi.org/10.5281/zenodo.5115225)
+[![License](https://img.shields.io/badge/license-CC--BY--4-orange.svg)](https://creativecommons.org/licenses/by/4.0/)
+
+The data from these observations is available publicly under the CC-BY-4 open-source license. Provided are the pre-processed data cubes and parallactic angles from each epoch of observation. To download the data, visit the [zenodo page](https://doi.org/10.5281/zenodo.5115225) and please cite the appropriate DOI if you use it in your work.
+
 
 ## Setup
 
@@ -28,4 +39,4 @@ Then, to set up the Julia requirements
 
 ## Usage
 
-The processing and analysis code is all located in `notebooks`. The order is `preprocessing` > `psf_subtraction` > `analysis`. Some helper library code is located in `src`.
+The processing and analysis code is all located in `notebooks`. The order is `preprocessing` > `psf_subtraction`. Some helper library code is located in `src`. All of the paper figures were produced from scripts in `paper/figures`.
