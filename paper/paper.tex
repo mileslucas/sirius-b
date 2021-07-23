@@ -101,7 +101,7 @@ For each epoch we applied a flat correction using calibration frames captured du
 
 During observing we applied the technique of angular differential imaging \citep[ADI;][]{marois_angular_2006} where we disable the field rotator and allow the FOV to rotate throughout the night along with Earth. The point-spread function (PSF), which is an instrumental effect, will not appear to rotate while any potential companion will appear to rotate. This allows modeling and subtracting the PSF with less probability for subtracting companion signal. After subtraction, the frames are derotated by their parallactic angle and combined with a weighted sum \citep{bottom_noise-weighted_2017}, which reduces the pixel-to-pixel noise as the number of frames in the data cube increases.
 
-For this analysis we used three statistical models for modeling the stellar PSF, classic median subtraction \citep{marois_angular_2006}, principal component analysis \citep[PCA;][]{soummer_detection_2012}, and fixed-point greedy disk subtraction \citep[GreeDS;][]{pairet_reference-less_2019,pairet_mayonnaise_2020}. The median subtraction and PCA methods were also applied in an annular method, where we model the PSF in annuli of increasing separation, since each annulus has similar statistcal properties under the framework of ADI \citep{marois_angular_2006}.
+For this analysis we used four statistical models for modeling the stellar PSF, classic median subtraction \citep{marois_angular_2006}, principal component analysis \citep[PCA;][]{soummer_detection_2012}, non-negative matrix factorization\citep[NMF;][]{ren_non-negative_2018}, and fixed-point greedy disk subtraction \citep[GreeDS;][]{pairet_reference-less_2019,pairet_mayonnaise_2020}. The median subtraction and PCA methods were also applied in an annular method, where we model the PSF in annuli of increasing separation, since each annulus has similar statistcal properties under the framework of ADI \citep{marois_angular_2006}.
 
 We used three metrics for determining the performance of each algorithm, the signal-to-noise ratio (S/N) detection map, the standardized trajectory intensity mean map \citep[STIM map;][]{pairet_stim_2019}, and the STIM largest intensity mask map \citep[SLIM map;][]{pairet_signal_2020}. These metrics assign a likelihood to each pixel for the presence of a companion using different assumptions of the residual statistics. The SLIM map is an ensemble statistic which calculates the average STIM map from many residual cubes, such as many variations of PCA with differing number of components.
 
@@ -155,5 +155,27 @@ scikit-image \citep{walt_scikit-image_2014},
 
 \bibliography{references}{}
 \bibliographystyle{aasjournal}
+
+\appendix
+
+\section{ADI Processing Results}
+
+\include{sections/adi_results}
+
+
+\begin{figure*}
+    \plotone{2020feb04_contrast_curves}
+    \caption{5$\sigma$ contrast curves from various ADI algorithms for the 2020-02-04 epoch. Both the Gaussian (solid lines) and Student-t corrected (dashed lines) contrast curves are shown.}
+\end{figure*}
+
+\begin{figure*}
+    \plotone{2020nov21_contrast_curves}
+    \caption{5$\sigma$ contrast curves from various ADI algorithms for the 2020-11-21 epoch. Both the Gaussian (solid lines) and Student-t corrected (dashed lines) contrast curves are shown.}
+\end{figure*}
+
+\begin{figure*}
+    \plotone{2020nov28_contrast_curves}
+    \caption{5$\sigma$ contrast curves from various ADI algorithms for the 2020-11-28 epoch. Both the Gaussian (solid lines) and Student-t corrected (dashed lines) contrast curves are shown.}
+\end{figure*}
 
 \end{document}
