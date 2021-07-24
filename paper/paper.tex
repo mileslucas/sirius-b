@@ -7,6 +7,7 @@
 \DeclareSIUnit\parsec{pc}
 \DeclareSIUnit\au{AU}
 \DeclareSIUnit\mj{M_J}
+\DeclareSIUnit\ms{M_\odot}
 \DeclareSIUnit\year{yr}
 
 %% Define new commands here
@@ -44,19 +45,29 @@
 
 \section{Introduction} \label{sec:intro}
 
-Very little is known about the evolution of planetary systems beyond the main-sequence lifetime of their host stars. Theoretical calculations show that planets can survive the red giant and asymptotic giant stages \citep{burleigh_imaging_2002,jura_pollution_2008,nordhaus_orbits_2013}, and results from radial velocity and transit surveys suggest extrasolar planets are prevalent throughout the Milky Way \citep{cumming_keck_2008}. However, only one planetary mass object has been detected around a white dwarf (WD) with imaging \citep[WD 0806-661;][]{luhman_discovery_2011}.
+High-contrast imaging (HCI) is a powerful technique for discovering and characterizing exoplanets. Being able to probe the architecture, formation, and atmospheres of planets directly is necessary for advancing substellar companion formation and evolution theory. The process required to image a planet is daunting, however. The typical astrophysical flux ratios for a Sun-Jupiter analog in the near-infrared (NIR) are $\sim10^{-8}$, and for a Sun-Earth system are $\sim10^{-10}$ \citep{traub_direct_2010}. In addition, the close angular separation of planets makes it difficult to distinguish them from the diffraction pattern of the star and other noise sources. In order to make such a difficult detection it is imperative to minimize diffraction, scattering, and systematic noise.
 
-Directly imaging exoplanets is a powerful method in exoplanet science which explores a parameter space very complementary to the popular transit photometry and radial velocity methods. The red giant stage has cleared planets within a few \si{au} greatly lowering the transit probability. White dwarfs have very few spectral lines to make high-precision radial velocity measurements from spectral lines. Imaging, though, benefits from the orbital expansion of the planet, and the cooling of the white dwarf greatly reduces the contrast between them \citep{burleigh_imaging_2002,gould_finding_2008}. The Degenerate Objects around Degenerate Objects (DODO) survey observed 29 white dwarfs with Gemini/NIRI and VLT/ISAAC and provided upper limits around $\sim$\SI{8}{\mj} beyond \SI{35}{\au} \citep{hogan_dodo_2009}.
+Nearby white dwarfs (within $\sim$\qty{100}{\parsec}) are compelling targets for direct imaging searches, despite the limited knowledge of planetary systems around evolved stars. \cite{burleigh_imaging_2002} suggests planets on initially wide (>\qty{5}{\au}) orbits around intermediate mass stars (\qtyrange{1}{8}{\ms}) will survive expansion during the red giant (RGB) phase and remain bound to the resultant white dwarf. During the asymptotic giant (AGB) phase, strong ionizing soft X-ray and UV emission will likely photoevaporate planetary atmospheres. In addition,  the mass loss of the star will adiabatically expand the orbit of the planet by a maximum factor of $M_{*,\mathrm{WD}}/M_{*,\mathrm{MS}}$ \citep{jeans_cosmogonic_1924}.
+
+
+Theoretical calculations show that planets can survive the red giant and asymptotic giant stages \citep{burleigh_imaging_2002,jura_pollution_2008,nordhaus_orbits_2013}, and results from radial velocity and transit surveys suggest extrasolar planets are prevalent throughout the Milky Way \citep{cumming_keck_2008}. 
+
+However, only one planetary mass object has been detected around a white dwarf (WD) with imaging \citep[WD 0806-661;][]{luhman_discovery_2011}.
+
+Directly imaging exoplanets is a powerful method in exoplanet science which explores a parameter space very complementary to the popular transit photometry and radial velocity methods. The red giant stage has cleared planets within a few \unit{au} greatly lowering the transit probability. White dwarfs have very few spectral lines to make high-precision radial velocity measurements from spectral lines. Imaging, though, benefits from the orbital expansion of the planet, and the cooling of the white dwarf greatly reduces the contrast between them \citep{burleigh_imaging_2002,gould_finding_2008}. The Degenerate Objects around Degenerate Objects (DODO) survey observed 29 white dwarfs with Gemini/NIRI and VLT/ISAAC and provided upper limits around $\sim$\qty{8}{\mj} beyond \qty{35}{\au} \citep{hogan_dodo_2009}.
 
 In this work we study the closest white dwarf to the Sun, Sirius b, and provide upper mass limits based on our observations in the near-infrared. \autoref{sec:obs} describes our target and observing strategy, \autoref{sec:analysis} describes the processing and analysis techniques used, \autoref{sec:results} describes our results and we conclude with \autoref{sec:conclusion}.
 
+Sirius is one of the closest star system to the Sun at \qty{2.7}{\parsec} away, consisting of an A1Vm star (a) and a WD with an age around \qty{225}{\mega\year} \citep{bond_sirius_2017,collaboration_gaia_2018}. There are no known planets around either star, and using constrained 3-body numerical simulations a potential companion around Sirius b would only be stable with a \qty{1.79}{\year} orbit, which corresponds to a circular orbit with \qty{1.5}{\au} separation. Sirius b has been studied in the \qty{10}{\micro\meter} regime recently by \cite{pathak_high_2021}, who achieve \qtyrange[]{1.8}{3.5}{\mj} upper limits within 2 arcseconds.
+
+
 \section{Observations} \label{sec:obs}
 
-Sirius is the closest star system to the Sun at \SI{2.7}{\parsec} away, consisting of an A1Vm star (a) and a WD with an age around \SI{225}{\mega\year} \citep{bond_sirius_2017,collaboration_gaia_2018}. There are no known planets around either star, and using constrained 3-body numerical simulations a potential companion around Sirius b would only be stable with a \SI{1.79}{\year} orbit, which corresponds to a circular orbit with \SI{1.5}{\au} separation. Sirius b has been studied in the \SI{10}{\micro\meter} regime recently by \cite{pathak_high_2021}, who achieve \SIrange[]{1.8}{3.5}{\mj} upper limits within 2 arcseconds.
+We targeted Sirius B directly using Keck/NIRC2 in Lp-band across three epochs in 2020 (\autoref{tbl:obs}). Our first attempt to observe Sirius B failed due to the strong scattered light from Sirius A. The adaptive optics (AO) calibration routinely failed when the extremely bright (-1.35 K-band magnitude) diffraction patterns would sweep into the field of view (FoV) of Sirius B (shown in \autoref{fig:spike}). Similarly, trying to deploy the focal-plane vortex coronagraph \citep{serabyn_w_2017} failed when the low-order wavefront correction algorithm, QACITS \citep{huby_w_2017}, performed erratically in the presence of the scattered light. In order to overcome these issues, we decided to try using Sirius A as the NGS and off-axis guiding to Sirius B.
 
-We targeted Sirius b directly using Keck/NIRC2 in Lp-band across three epochs in 2020 \autoref{tbl:obs}. Due to the high proper motion and reasonable orbital motion, we started by calculating the projected offset and position angle from Sirius a based on the orbital parameters from \cite{bond_sirius_2017}. We first slewed to Sirius a, which is easy to lock onto due to its brightness \citep[-1.35 K-band magnitude;][]{bonnet-bidaud_adonis_2008}. We found that Sirius b is too dim \citep[9.01 K-band magnitude;][]{bonnet-bidaud_adonis_2008} for the adaptive optics (AO) performance necessary for coronagraphy and that the scattered light from Sirius a was detrimental to closing the AO loop when using Sirius b as a natural guide star (NGS) anyways. Therefore, we employed a unique off-axis solution, using a narrow laser-line filter for the wavefront sensor using Sirius a as the NGS and offsetting to Sirius b manually.
+The Keck AO system \citep{wizinowich_performance_2000} was not designed to accomadate stars as bright as Sirius A, so we needed to attenuate the flux greatly to avoid saturating the wavefront sensor (WFS). We accomplished this using a narrow laser-line filter in front of the WFS, which brought Sirius A from $\sim$ -1.35 mag down to $\sim$ 5 mag. While still extremely bright, this was enough attenuation to close the AO loop. From here, we slewed off-axis using the separations and position angles calculated in \autoref{tbl:obs} from the orbital parameters in \cite{bond_sirius_2017}. In this mode, we noticed higher than usual drift in the focal plane, requiring manually recentering the target every 5 or 10 minutes. For both the November epochs we tried exploiting this by dithering between two positions in order to simplify background subtraction, but this ended up performing worse than the high-pass filter method we used in \autoref{sec:analysis}. We tried deploying the vortex coronagraph along with QACITS, but again the scattered light from Sirius A made QACITS unstable, so we decided to forego any coronagraphy for the remaining observations.
 
-The scattered light from Sirius a is so strong, in fact, that radial diffraction spikes from the Keck II secondary mirror support structure are still present in the Sirius b frames, which reduced our overall observing efficiency due to discarding these frames. An example of such a diffraction spike is shown in \autoref{fig:spike}.
+During each observation, calibration frames were taken in the form of dark frames and sky flat frames. We also disabled the field rotator, which caused the FoV to rotate throughout the night for angular differential imaging \citep[ADI;][]{marois_angular_2006}.
 
 \begin{figure}
     \centering
@@ -67,51 +78,53 @@ The scattered light from Sirius a is so strong, in fact, that radial diffraction
 \end{figure}
 
 
-\begin{deluxetable*}{ccccccc}
-    % \tabletypesize{\scriptsize}
+\begin{deluxetable*}{ccccccccc}
+    \tabletypesize{\scriptsize}
     \tablecaption{Observing parameters for the three epochs of data. All observations were carried out using the NIRC2 Lp-band filter. Observation time is based on the frames that were selected for processing.
     \label{tbl:obs}}
     \tablehead{
         \colhead{Date observed} &
-        \colhead{Sirius a offset (")} &
-        \colhead{Sirius a PA (\textdegree)} &
+        \colhead{Sirius A offset (arcsec)} &
+        \colhead{Sirius A PA (\textdegree)} &
         \colhead{Observation time (hr)} & 
+        \colhead{FoV rotation (\textdegree)} &
+        \colhead{FWHM (mas)} &
         \colhead{Seeing (arcsec)} & 
         \colhead{Temp (\textdegree C)} & 
         \colhead{PWV (mm)}
     }
     \startdata
-    2020-02-04 & 11.20 & 67.90 & 1.44 &  &  &  \\
-    2020-11-21 & 11.27 & 66.42 & 2.91 &  &  &  \\
-    2020-11-28 & 11.27 & 66.38 & 2.44 &  &  &  \\
+    2020-02-04 & 11.20 & 67.90 & 1.44 & 60.1 & 79.9 & &  &  \\
+    2020-11-21 & 11.27 & 66.42 & 2.91 & 91.4 & 76.4 & &  &  \\
+    2020-11-28 & 11.27 & 66.38 & 2.44 & 80.4 & 82.2 & &  &  \\
     \enddata
 \end{deluxetable*}
 
 \section{Analysis} \label{sec:analysis}
 
-For each epoch we applied a flat correction using calibration frames captured during observing. We also removed bad pixels using a combination of L.A.Cosmic \citep{dokkum_cosmic-ray_2001} and an adaptive sigma-clipping algorithm. We finally remove sky background using a high-pass median filter. At this point frames were manually filtered to remove bad frames, especially those with diffraction spikes like in \autoref{fig:spike}. Then, each good frame is co-registered using cross-correlations \citep{guizar-sicairos_efficient_2008} and aligned with the center of the FOV. Lastly the frames were cropped to the inner 200 pixels and stacked into data cubes for each epoch. With the pixel scale of \SI{10}{mas\per px} the crop corresponds to a maximum separation of \SI{2.7}{\au}. We also measure the parallactic angle of each frame, including corrections for distortion effects following \cite{yelda_improving_2010}. For each epoch, we measure the full-width at half-maximum (FWHM) of the stellar PSF by fitting a bivariate Gaussian model to the median frame from each data cube (an example of one is shown in \autoref{fig:psf}).
+For each epoch we applied a flat correction using calibration frames captured during observing. We also removed bad pixels using a combination of L.A.Cosmic \citep{dokkum_cosmic-ray_2001} and an adaptive sigma-clipping algorithm. We removed sky background using a high-pass median filter with a box size of 31 pixels. At this point frames were manually filtered to remove bad frames, especially those with diffraction spikes within a few hundred pixels, like in \autoref{fig:spike}. Then, each good frame is co-registered using cross-correlations \citep{guizar-sicairos_efficient_2008} as a first-order correction and then fitting each frame with a Gaussian PSF. The co-registered frames are then shifted to the center of the FoV. Lastly the frames were cropped to the inner 200 pixels and stacked into data cubes for each epoch. With the pixel scale of \qty{10}{mas\per px} the crop corresponds to a maximum separation of \qty{1}{"} or a projected separation of \qty{2.7}{\au}. We also measure the parallactic angle of each frame, including corrections for distortion effects following \cite{yelda_improving_2010}. For each epoch, we measure the full-width at half-maximum (FWHM) of the stellar PSF by fitting a bivariate Gaussian model to the median frame from each data cube (an example of one is shown in \autoref{fig:psf}). All of the pre-processing code is available in Jupyter notebooks at the following GitHub repository\footnote{\href{https://github.com/mileslucas/sirius-b}{https://github.com/mileslucas/sirius-b}} and the reduced data cubes and parallactic angles have been made available on Zenodo \citep{lucas_nirc2_2021}.
 
 \begin{figure}
     \centering
     \epsscale{1}
     \plotone{psf}
-    \caption{The median frame from the 2020-11-21 epoch showing the instrumental PSF. The inner core has a FWHM of $\sim$\SI{76}{mas}. The speckle pattern can be seen in the blobs surrounding the first ring, with roughly 6-way radial symmetry corresponding to the hexagonal shapes of the segmented mirrors.}
+    \caption{The median frame from the 2020-11-21 epoch showing the instrumental PSF. The inner core has a FWHM of $\sim$\qty{76}{mas}. The speckle pattern can be seen in the blobs surrounding the first ring, with roughly 6-way radial symmetry corresponding to the hexagonal shapes of the segmented mirrors.}
     \label{fig:psf}
 \end{figure}
 
-During observing we applied the technique of angular differential imaging \citep[ADI;][]{marois_angular_2006} where we disable the field rotator and allow the FOV to rotate throughout the night along with Earth. The point-spread function (PSF), which is an instrumental effect, will not appear to rotate while any potential companion will appear to rotate. This allows modeling and subtracting the PSF with less probability for subtracting companion signal. After subtraction, the frames are derotated by their parallactic angle and combined with a weighted sum \citep{bottom_noise-weighted_2017}, which reduces the pixel-to-pixel noise as the number of frames in the data cube increases.
+By taking data with the field rotator disabled (ADI), the point-spread function (PSF), which is an instrumental effect, will not appear to rotate while any potential companion will appear to rotate. This allows modeling and subtracting the PSF with less probability for subtracting companion signal. After subtraction, the frames are derotated by their parallactic angle and combined with a weighted sum \citep{bottom_noise-weighted_2017}, which reduces the pixel-to-pixel noise as the number of frames in the data cube increases.
 
-For this analysis we used four statistical models for modeling the stellar PSF, classic median subtraction \citep{marois_angular_2006}, principal component analysis \citep[PCA;][]{soummer_detection_2012}, non-negative matrix factorization\citep[NMF;][]{ren_non-negative_2018}, and fixed-point greedy disk subtraction \citep[GreeDS;][]{pairet_reference-less_2019,pairet_mayonnaise_2020}. The median subtraction and PCA methods were also applied in an annular method, where we model the PSF in annuli of increasing separation, since each annulus has similar statistcal properties under the framework of ADI \citep{marois_angular_2006}.
+For this analysis we used four statistical models for modeling the stellar PSF, classic median subtraction \citep{marois_angular_2006}, principal component analysis \citep[PCA;][]{soummer_detection_2012}, non-negative matrix factorization \citep[NMF;][]{ren_non-negative_2018}, and fixed-point greedy disk subtraction \citep[GreeDS;][]{pairet_reference-less_2019,pairet_mayonnaise_2020}. The median subtraction and PCA methods were also applied in an annular method, where we model the PSF in annuli of increasing separation frame-by-frame, discarding frames which have not rotated at least 0.5 FWHM \citep{marois_angular_2006}.
 
-We used three metrics for determining the performance of each algorithm, the signal-to-noise ratio (S/N) detection map, the standardized trajectory intensity mean map \citep[STIM map;][]{pairet_stim_2019}, and the STIM largest intensity mask map \citep[SLIM map;][]{pairet_signal_2020}. These metrics assign a likelihood to each pixel for the presence of a companion using different assumptions of the residual statistics. The SLIM map is an ensemble statistic which calculates the average STIM map from many residual cubes, such as many variations of PCA with differing number of components.
+We used three metrics for determining the performance of each algorithm, the signal-to-noise ratio (S/N) significance map, the standardized trajectory intensity mean map \citep[STIM map;][]{pairet_stim_2019}, and the contrast curve. The significance and STIM maps assign a likelihood to each pixel for the presence of a companion using different assumptions of the residual statistics. The contrast curve determines the sensitivity of a 5$\sigma$ statistical detection through repeated injection and retrieval of planetary signal as processed by one of the ADI algorithms above. We calculate both the Gaussian contrast and the Student-t corrected contrast, which accounts for the small-sample statistics in each annulus \citep{mawet_fundamental_2014}. The collapsed residual frames along with the above metrics for each algorithm for each epoch can be found in \autoref{sec:adi-results}.
 
-Another metric we calculate for some of the algorithms is the contrast curve, which determines the sensitivity of a 5$\sigma$ statistical detection through repeated injection and retrieval of planetary signal as processed by one of the ADI algorithms above. We calculate both the Gaussian contrast and the Student-t corrected contrast, which accounts for the small-sample statistics in each annulus \citep{mawet_fundamental_2014}.
+Another metric we explored was the STIM largest intensity mask map \citep[SLIM map;][]{pairet_signal_2020}. The SLIM map is an ensemble statistic which calculates the average STIM map from many residual cubes along with the average mask of the $N$ most intense pixels in each STIM map. We use the SLIM map with the PCA, NMF, and GreeDS algorithms because they all depend on choosing the number of basis components, which is hard to determine \textit{a priori}. For each algorithm, we create residual cubes for increasing number of components, from 1 to 10. The collapsed residual frames, average STIM map, SLIM map, and contrast curves for each epoch for each of the above algorithms can be found in \autoref{sec:adi-results}. All of the code for these reductions can be found at the GitHub repository\footnote{\href{https://github.com/mileslucas/sirius-b}{https://github.com/mileslucas/sirius-b}}.
 
 \section{Results} \label{sec:results}
 
 \begin{figure*}
     \centering
-    \epsscale{1.1}
+    \epsscale{1}
     \plotone{residuals}
     \caption{The flat residuals of each epoch after PSF subtraction, derotating, and collapsing. The inner full-width at half-maximum (FWHM) is masked out for each frame.}
     \label{fig:residuals}
@@ -119,26 +132,38 @@ Another metric we calculate for some of the algorithms is the contrast curve, wh
 
 \begin{figure*}
     \centering
-    \epsscale{1.1}
-    \plotone{snr}
-    \caption{The S/N maps for each epoch calculated with Gaussian noise assumptions. The inner full-width at half-maximum (FWHM) is masked out for each map.}
-    \label{fig:snr}
+    \epsscale{1}
+    \plotone{sig}
+    \caption{The \textit{significance} maps for each epoch accounting for small sample statistics \citep{mawet_fundamental_2014}. Typically a critical value for detection is 5. The inner full-width at half-maximum (FWHM) is masked out for each map.}
+    \label{fig:sig}
 \end{figure*}
 
 \begin{figure*}
     \centering
-    \epsscale{1.1}
+    \epsscale{1}
     \plotone{stim}
     \caption{The STIM maps for each epoch calculated from the residual cube. Note that the STIM probability has a typical cutoff threshold of 0.5 for significant detections. The inner full-width at half-maximum (FWHM) is masked out for each map.}
     \label{fig:stim}
 \end{figure*}
 
+We determined the best-performing algorithms for each epoch using the contrast curves described in \autoref{sec:analysis}. For the 2020-02-04 and 2020-11-21 epochs full-frame median subtraction had the best contrast at all separations. For the 2020-11-28 epoch annular PCA subtraction with 2 principal components and a rotation threshold of 0.5 FWHM produced the best contrast at close separations (\qtyrange{0.5}{1}{"}) and had similar performance to other algorithms beyond \qty{1}{"}. The collapsed residual frames from each epoch are shown in \autoref{fig:residuals}, along with the Gaussian significance maps (\autoref{fig:sig}) and STIM maps (\autoref{fig:stim}).
 
-The best performing algorithms for each epoch in terms of sensitivity were median subtraction median subtraction, and PCA subtraction with 2 principal components. The flat residual images from each epoch are shown in \autoref{fig:residuals}, along with the Gaussian S/N maps (\autoref{fig:snr}) and STIM maps (\autoref{fig:stim}). For each epoch we determined there was not significant evidence for a companion around Sirius b.
+In these images there is not \textit{consistent} or overwhelming evidence for a substellar companion. The STIM probability maps for the 2020-11-21 and 2020-11-28 epochs suggest evidence for some blobs $\sim$\qty{0.13}{"} from the center. The lack of evidence in the February epoch and the significance maps as well as the proximity to the central star ($\sim$2 FWHM) all discredit the probability of these blobs being companions. Nonetheless, we estimated astrometry for blobs from each epoch (\autoref{tbl:astrometry}) and tried fitting Keplerian orbits using the ``Orbits for the Impatient" algorithm \citep[OFTI;][]{blunt_orbits_2017}. We generated $10^4$ orbits, none of which managed to contain the points from each epoch (\autoref{sec:orbits}). We take this as direct evidence against the blobs being substellar companions of any kind.
 
+The contrast maps from the best performing algorithm for each reduction are shown in \autoref{fig:contrast}. We determine the limiting sensitivities in terms of the planetary mass by first calculating the contrast-limited magnitude using an Lp-band magnitude for Sirius B of 9.1 (adapted from \citealp{bonnet-bidaud_adonis_2008}). Then we use an age of \qty{225}{\mega\year} to interpolate the planetary mass using the AMES-Cond evolutionary grid and atmosphere models \citep{allard_models_2012}. The best performing epoch was the 2020-11-21 night, which managed to reach an exceptional sensitivity of \qtylist[list-units=single]{3.5;1.9;1.1;0.72;0.63}{\mj} at projected separations of \qtylist[list-units=single]{0.25;0.5;0.75;1;2}{\au} (\qtylist[list-units=single]{0.09;0.19;0.28;0.38;0.75}{"}) respectively.
+
+\begin{figure*}[t]
+    \centering
+    \epsscale{1}
+    \plotone{contrast_curves}
+    \caption{The contrast curves for the best performing algorithm from each epoch. The solid lines are the Gaussian 5$\sigma$ contrast curves and the dashed lines are the Student-t corrected cuves \citep{mawet_fundamental_2014}. In addition, the expected upper limit for orbital separation of a stable orbit \citep{bond_sirius_2017} of \qty{1.5}{\au} are plotted in a vertical dashed line. The companion mass values are interpolated from the AMES-Cond grid \citep{allard_models_2012}. The lower mass limit (upper magnitude limit) of these models is plotted in a light-gray horizontal dashed line.}
+    \label{fig:contrast}
+\end{figure*}
 
 
 \section{Conclusions} \label{sec:conclusion}
+
+It is interesting to note that there is a symmetric shape in the residual frames from GreeDS and NMF for the November epochs. Both these algorithms were designed for imaging disks, so it is natural to consider this structure to be some kind of circumstellar debris disk.
 
 
 \begin{acknowledgments}
@@ -158,7 +183,7 @@ scikit-image \citep{walt_scikit-image_2014},
 
 \appendix
 
-\section{ADI Processing Results}
+\section{ADI Processing Results} \label{sec:adi-results}
 
 \include{sections/adi_results}
 
@@ -176,6 +201,29 @@ scikit-image \citep{walt_scikit-image_2014},
 \begin{figure*}
     \plotone{2020nov28_contrast_curves}
     \caption{5$\sigma$ contrast curves from various ADI algorithms for the 2020-11-28 epoch. Both the Gaussian (solid lines) and Student-t corrected (dashed lines) contrast curves are shown.}
+\end{figure*}
+
+\section{Provisional Orbit Fitting} \label{sec:orbits}
+
+
+\begin{deluxetable*}{ccc}
+    \tablecaption{Provisional astrometry for blobs of interesest from each epoch. The uncertainties are represented in parantheses and are derived from the FWHM of the PSF from each epoch.
+    \label{tbl:astrometry}}
+    \tablehead{
+        \colhead{Date observed} &
+        \colhead{offset (mas)} &
+        \colhead{PA (\textdegree)}
+    }
+    \startdata
+    2020-02-04 & 193(38) & -99(11)  \\
+    2020-11-21 & 125(38) & 75(17)  \\
+    2020-11-28 & 215(40) & 23(11)  \\
+    \enddata
+\end{deluxetable*}
+
+\begin{figure*}
+    \plotone{orbit}
+    \caption{Provisional orbits fit using OFTI with $10^4$ orbits. None of the orbits contain all three points within their uncertainties.}
 \end{figure*}
 
 \end{document}

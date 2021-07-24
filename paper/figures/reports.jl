@@ -147,7 +147,7 @@ end
     @info "FWHM for epoch $epoch is $fwhm px"
     starphot = Metrics.estimate_starphot(cube, fwhm)
     psfphot = Metrics.estimate_starphot(psf_model, fwhm) * exp(res[4])
-    @info "star photometry is ≈ $starphot (PSF amp was $psfphot)"
+    @info "star photometry is ≈ $starphot (PSF photometry was $psfphot)"
     
     # naturally mask out inner FWHM
     av_cube = AnnulusView(cube .- minimum(cube); inner=fwhm)

@@ -20,7 +20,7 @@ auscale = pxscale / parallax # AU / px
 function plot_mosaic(res_cubes, angles; epoch, label, ncomps)
     py"""
     import proplot as pro
-    fig, axs = pro.subplots(nrows=6, ncols=5, share=3, width="7.5in", space=0)
+    fig, axs = pro.subplots(nrows=2, ncols=5, share=3, width="7.5in", space=0)
     """
     i = 0
     for (n, res) in zip(res_cubes, ncomps)
@@ -49,26 +49,55 @@ function plot_mosaic(res_cubes, angles; epoch, label, ncomps)
     """
 end
 
-function plot_results(contrast_curves; epoch, label)
+function plot_results(res_cubes, angles, contrast_curves; epoch, label, fwhm)
     py"""
     import proplot as pro
-    fig, axs = pro.subplots(width="7.5in", height="4in")
+    fig, axs = pro.subplots([[1, 3], [2, 3]], share=0, width="7.5in")
     cycle = pro.Cycle("viridis", $(length(res_cubes)))
     lines = []
     """
+    # plot the average STIM map and SLIM probability map
+    ticks = range(20, 179, length=5)
+    tick_labs = @. string(round(pxscale * (ticks - 99.5), digits=1))
+
+    stimmap, slimmask = slimmap(res_cubes, angles; N=cil(Int, π/4 * fwhm^2))
+    slimprob = stimmap .* slimmask
+    py"""
+    axs[0].imshow($stimmap, vmin=0, vmax=1)
+    axs[0].text(6, 6, "mean STIM", color="w")
+    m = axs[1].imshow($slimprob, vmin=0, vmax=1)
+    axs[1].text(6, 6, "SLIM map", color="w")
+    fig.colorbar(m, loc="l")
+
+    axs[0].format(
+        ylabel="y [arcsec]"
+        yticks=$ticks
+        yticklabels=$tick_labs
+        xticks="null"
+    )
+    axs[1].format(
+        ylabel="y [arcsec]"
+        xlabel="x [arcsec]"
+        yticks=$ticks
+        yticklabels=$tick_labs
+        xticks=$ticks
+        yticklabels=$tick_labs
+    )
+    """
+    # now plot contrast curves
     i = 0
     for (label, curve) in contrast_curves
         dist = curve.distance .* auscale
         color = "C$i"
         py"""
-        l = axs.plot($dist, $(curve.contrast), cycle=cycle, color=$color)
+        l = axs[2].plot($dist, $(curve.contrast), cycle=cycle, color=$color)
         lines.append(l)
         """
         i += 1
     end
     py"""
-    axs.text(0.25, 5e-4, $(_epochs[epoch]), fontsize=14)
-    fig.colorbar(lines, label="ncomp")
+    axs[2].text(0.25, 5e-4, $(_epochs[epoch]), fontsize=14)
+    fig.colorbar(lines, loc="r", label="ncomp")
     axs.dualx(lambda x: x * $parallax, label="separation [arcsec]")
     ax2 = axs.alty(
         yticks=[0.09, 0.31, 0.54, 0.77, 1],
@@ -76,7 +105,7 @@ function plot_results(contrast_curves; epoch, label)
         label="Δ mag"
     )
 
-    axs.format(
+    axs[2].format(
         ylim=(10**(-3.5), 1),
         yscale="log",
         yformatter="log",
@@ -107,12 +136,12 @@ end
     @info "FWHM for epoch $epoch is $fwhm px"
     starphot = Metrics.estimate_starphot(cube, fwhm)
     psfphot = Metrics.estimate_starphot(psf_model, fwhm) * exp(res[4])
-    @info "star photometry is ≈ $starphot (PSF amp was $psfphot)"
+    @info "star photometry is ≈ $starphot (PSF photometry was $psfphot)"
     
     # naturally mask out inner FWHM
     av_cube = AnnulusView(cube; inner=fwhm)
 
-    ncomps = 1:30
+    ncomps = 1:10
     @progress name="algorithm" for alg in [PCA, NMF, GreeDS]
         @withprogress name="ncomp" begin
         i = 1
@@ -127,8 +156,8 @@ end
         res_cubes = map(r -> r[1], outputs)
         contrast_curves = map(r -> r[1], outputs)
         label = _label(alg)
-        plot_mosaic(res_cubes; epoch, label, ncomps)
-        plot_results(contrast_curves; epoch, label, fwhm)
+        plot_mosaic(res_cubes, angles; epoch, label, ncomps)
+        plot_results(res_cubes, angles, contrast_curves; epoch, label, fwhm)
     end
 end
 
