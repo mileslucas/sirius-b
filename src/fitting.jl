@@ -23,11 +23,11 @@ function loss(X::AbstractVector{T}, target::SubArray) where T
 end
 
 """
-    gaussian_fit(frame, guess=(256.5, 256.5))
+    gaussian_fit(frame, guess=center(frame))
 
 Fit a 2D Gaussian PSF profile to `frame` centered around `guess` and return the best fitting parameters `[x, y, FWHM, log(Amp)]`.
 """
-function gaussian_fit(frame::AbstractMatrix{T}, guess=(256.5, 256.5); sub_size=100) where T
+function gaussian_fit(frame::AbstractMatrix{T}, guess=center(frame); sub_size=100) where T
     # crop target view for speed
     half_size = sub_size ÷ 2
     indsx = round(Int, guess[1]-half_size):round(Int, guess[1]+half_size)
@@ -40,13 +40,14 @@ function gaussian_fit(frame::AbstractMatrix{T}, guess=(256.5, 256.5); sub_size=1
 end
 
 """
-    gaussian_fit_offset(frame, guess=(256.5, 256.5))
+    gaussian_fit_offset(frame, guess=center(frame))
 
 Fit a 2D Gaussian PSF profile to `frame` centered around `guess` and return the offset from the center. Combine this with `HCIToolbox.shift_frame` for registering frames.
 """
 function gaussian_fit_offset(frame::AbstractMatrix{T}, args...; kwargs...) where T
     Xbest = gaussian_fit(frame, args...; kwargs...)
-    dx = 256.5 - Xbest[1]
-    dy = 256.5 - Xbest[2]
+    cy, cx = center(frame)
+    dx = cx - Xbest[1]
+    dy = cy - Xbest[2]
     return dx, dy
 end
