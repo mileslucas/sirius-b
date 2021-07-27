@@ -169,8 +169,14 @@ end
 
     @progress "algorithm" for (alg, target, label) in targets
         @info label
-        res_cube = subtract(alg, target; angles, fwhm)
-        cc = contrast_curve(alg, target, angles, psf_model; fwhm, angles, starphot, nbranch=6)
+        filename = make_filename_friendly(datadir("epoch_$epoch", "residuals", "$(epoch)_sirius-b_residual_$label.fits"))
+        res_cube = load_or_produce(filename) do
+            subtract(alg, target; angles, fwhm)
+        end
+        filename = make_filename_friendly(datadir("epoch_$epoch", "residuals", "$(epoch)_sirius-b_contrast-curve_$label.csv"))
+        cc = load_or_produce(filename) do
+            contrast_curve(alg, target, angles, psf_model; fwhm, angles, starphot, nbranch=6)
+        end
         push!(contrast_curves, label => cc)
         plot_results(res_cube, angles, cc; fwhm, label, epoch)
     end

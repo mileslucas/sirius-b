@@ -11,7 +11,7 @@ using PyCall
 export rootdir, datadir, srcdir, notebookdir, paperdir, figuredir, load_or_produce,
        parallactic_angles, gaussian_fit, gaussian_fit_offset, center
 
-fits = pyimport("astropy.io.fits")
+const PYFITS = pyimport("astropy.io.fits")
 
 # path configuration
 rootdir(args...) = joinpath(@__DIR__(), "..", args...)
@@ -36,10 +36,11 @@ end
 ```
 """
 function load_or_produce(func, filename; force=false)
+    filename = normpath(filename)
     ext = last(splitext(filename))
 
     if !isfile(filename) || force
-        @info "$filename not found, producing..."
+        @info "$(normpath(filename)) not found, producing..."
         res = func()
         SAVER[ext](filename, res)
         @info "file saved to $filename"
@@ -50,20 +51,26 @@ function load_or_produce(func, filename; force=false)
     end        
 end
 
+
+load_fits(filename; kwargs...) = Array(PYFITS.getdata(filename; kwargs...))
+load_csv(filename; kwargs...) = DataFrame(CSV.File(filename; kwargs...))
 const LOADER = Dict(
     ".csv" => load_csv,
     ".fits" => load_fits
 )
-load_fits(filename; kwargs...) = Array(fits.getdata(filename; kwargs...))
-load_csv(filename; kwargs...) = DataFrame(CSV.File(filename; kwargs...))
 
+function save_fits(filename, data; kwargs...)
+    mkpath(dirname(filename))
+    PYFITS.writeto(filename, Array(data); overwrite=true, kwargs...)
+end
+function save_csv(filename, data; kwargs...)
+    mkpath(dirname(filename))
+    CSV.write(filename, data; kwargs...)
+end
 const SAVER = Dict(
     ".csv" => save_csv,
     ".fits" => save_fits
 )
-save_fits(filename, data; kwargs...) = fits.writeto(filename, Array(data); overwrite=true, kwargs...)
-save_csv(filename, data; kwargs...) = CSV.write(data, filename; kwargs...)
-
 
 include("angles.jl")
 include("fitting.jl")

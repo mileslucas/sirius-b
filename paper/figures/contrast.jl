@@ -20,12 +20,12 @@ model = models.MassModel(srcdir("mass_models", "data", "model.AMES-Cond-2000.M-0
 parallax = 376.6801e-3 # arcseconds
 pxscale = 0.01 # arcseconds/px
 auscale = pxscale / parallax # AU/px
-age = 225; # Myr
+age = 226; # Myr
 
 contrast_curves = [
-    DataFrame(CSV.File(datadir("epoch_2020feb04", "processed", "2020feb04_contrast-curve_median.csv"))),
-    DataFrame(CSV.File(datadir("epoch_2020nov21", "processed", "2020nov21_contrast-curve_median.csv"))),
-    DataFrame(CSV.File(datadir("epoch_2020nov28", "processed", "2020nov28_contrast-curve_annular-PCA-2.csv"))),
+    DataFrame(CSV.File(datadir("epoch_2020feb04", "residuals", "2020feb04_contrast-curve_median.csv"))),
+    DataFrame(CSV.File(datadir("epoch_2020nov21", "residuals", "2020nov21_contrast-curve_median.csv"))),
+    DataFrame(CSV.File(datadir("epoch_2020nov28", "residuals", "2020nov28_contrast-curve_annular-pca-2.csv"))),
 ]
 
 contrast_to_dmag(contrast) = -2.5 * log10(contrast)
