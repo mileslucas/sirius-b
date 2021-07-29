@@ -32,8 +32,11 @@ from matplotlib.colors import LogNorm
 
 fig, axs = pro.subplots(figwidth="3.5in")
 
-axs[0].imshow($psf, norm=LogNorm(vmin=3e-3, vmax=5e-2))
-axs[0].format(title="Epoch 2020-11-21")
+axs.imshow($psf, 
+    norm=LogNorm(vmin=3e-3, vmax=5e-2),
+    colorbar="r",
+)
+axs.format(title="Epoch 2020-11-21")
 axs.format(
     xticks=$tick_locs,
     xticklabels=$tick_labs,
@@ -42,5 +45,5 @@ axs.format(
     xlabel="x [arcsec]",
     ylabel="y [arcsec]",
 )
-fig.save($(joinpath(@__DIR__, "psf.pdf")))
+fig.save($(figuredir("psf.pdf")))
 """
