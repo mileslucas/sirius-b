@@ -114,6 +114,8 @@ During each observation, we took calibration frames in the form of dark frames a
     \enddata
 \end{deluxetable*}
 
+\pagebreak
+
 \section{Analysis} \label{sec:analysis}
 
 For each epoch we applied a flat correction using calibration frames captured during observing. We also removed bad pixels using a combination of L.A.Cosmic \citep{van_dokkum_cosmic-ray_2001} and an adaptive sigma-clipping algorithm. We removed sky background using a high-pass median filter with a box size of 31 pixels. For both the November epochs we tried exploiting the large focal plane drifts by dithering between two positions in order to simplify background subtraction, but this ended up performing worse than the high-pass filter. At this point frames were manually selected to remove bad frames, especially those with diffraction spikes from Sirius A within a few hundred pixels, like in \autoref{fig:spike}. Then, each good frame was co-registered to sub-pixel accuracy using the algorithm presented in \citet{guizar-sicairos_efficient_2008}, followed by fitting each frame with a Gaussian PSF to reach floating-point centroid accuracy.
@@ -164,14 +166,6 @@ All of the ADI algorithms and metrics are implemented in the open-source Julia p
     \label{fig:stim}
 \end{figure*}
 
-\begin{figure*}[t]
-    \centering
-    \epsscale{1}
-    \plotone{contrast_curves}
-    \caption{The contrast curves for the best performing algorithm from each epoch. The solid lines are the Gaussian 5$\sigma$ contrast curves and the dashed lines are the Student-t corrected curves. In addition, the expected upper limit for orbital separation of a stable orbit of \qty{1.5}{\au} is plotted as a vertical dashed line. The companion mass values are interpolated from the AMES-Cond grid. The lower mass limit (upper magnitude limit) of these models is plotted in a light-gray horizontal dashed line. The annular PCA curve is cut off because the contrast in the innermost annulus was greater than 1.}
-    \label{fig:contrast}
-\end{figure*}
-
 We determined the best-performing algorithms for each epoch using the contrast curves described in \autoref{sec:analysis}. For the first two epochs full-frame median subtraction had the best contrast at almost all separations. For the last epoch annular PCA subtraction with 2 principal components and a rotation threshold of 0.5 FWHM produced the best contrast at close separations (\qtyrange{0.2}{0.4}{\arcsecond}) and had similar performance to other algorithms beyond \ang{;;0.4}. The innermost annulus from this algorithm has greater than 1 contrast and is not shown. The collapsed residual frames from each epoch are shown in \autoref{fig:residuals}, along with the Gaussian significance maps (\autoref{fig:sig}) and STIM maps (\autoref{fig:stim}).
 
 The reduced images do not show consistent or overwhelming evidence for a substellar companion. The STIM probability maps for the 2020-11-21 and 2020-11-28 epochs suggest evidence for some blobs $\sim$\ang{;;0.13} from the center. The lack of evidence in the February epoch and the significance maps as well as the proximity to the central star ($\sim$2 FWHM) all reduce the probability of these blobs being true companions. Nonetheless, we estimated astrometry for blobs from each epoch (\autoref{tbl:astrometry}) and tried fitting Keplerian orbits using the ``Orbits for the Impatient'' algorithm \citep[OFTI;][]{blunt_orbits_2017}. We generated $10^4$ orbits, none of which managed to contain the points from each epoch (\autoref{sec:orbits}). We take this as direct evidence against the blobs being substellar companions of any kind.
@@ -180,6 +174,14 @@ It is interesting to note the morphology of the innermost $\sim$\ang{;;0.4} in t
 
 The contrast maps from the best performing algorithm for each reduction are shown in \autoref{fig:contrast}. We determine the limiting sensitivities in terms of the planetary mass by first calculating the contrast-limited magnitude using an Lp-band magnitude for Sirius B of 9.1 (adapted from \citealp{bonnet-bidaud_adonis_2008}). Then we use an age of \qty{226}{\mega\year} to interpolate the planetary mass using the AMES-Cond evolutionary grid and atmosphere models \citep{allard_models_2012}. It is important to note how the precision of the system age (see \autoref{sec:intro}) reduces uncertainty when interpolating planetary mass from the evolutionary grids. The best performing epoch was on the night of 2020-11-21, which managed to reach an exceptional sensitivity of \qty{3.5}{\jupitermass} at \qty{0.25}{\au} (\ang{;;0.09}) in the speckle limited regime and ultimately \qty{0.6}{\jupitermass} at \qty{1.5}{\au} (\ang{;;0.38}) in the sky-background limited regime.
 
+
+\begin{figure*}
+    \centering
+    \epsscale{1}
+    \plotone{contrast_curves}
+    \caption{The contrast curves for the best performing algorithm from each epoch. The solid lines are the Gaussian 5$\sigma$ contrast curves and the dashed lines are the Student-t corrected curves. In addition, the expected upper limit for orbital separation of a stable orbit of \qty{1.5}{\au} is plotted as a vertical dashed line. The companion mass values are interpolated from the AMES-Cond grid. The lower mass limit (upper magnitude limit) of these models is plotted in a light-gray horizontal dashed line. The annular PCA curve is cut off because the contrast in the innermost annulus was greater than 1.}
+    \label{fig:contrast}
+\end{figure*}
 
 \section{Conclusions} \label{sec:conclusion}
 
