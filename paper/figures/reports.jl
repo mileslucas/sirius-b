@@ -71,7 +71,7 @@ function plot_results(res_cube, angles, curve; fwhm, epoch, label)
         xlabel="x [arcsec]",
     )
 
-    axs[4].plot($arcsec, $(curve.contrast), label="Guassian", lw=1)
+    axs[4].plot($arcsec, $(curve.contrast), label="Gaussian", lw=1)
     axs[4].plot($arcsec, $(curve.contrast_corr), color="C0", ls="--", label="Student-t", lw=1)
     axs[4].fill_between($arcsec, $(curve.contrast), $(curve.contrast_corr), color="C0", alpha=0.2)
     axs[4].legend(ncol=1)
@@ -134,6 +134,11 @@ function plot_curves(contrast_curves; epoch)
     """
 end
 
+_ncomps = Dict(
+    "2020feb04" => 1,
+    "2020nov21" => 3,
+    "2020nov28" => 2
+)
 
 @progress name="epoch" for epoch in ["2020feb04", "2020nov21", "2020nov28"]
     cube = fits.getdata(datadir("epoch_$epoch", "processed", "$(epoch)_sirius-b_cube_calib_registered_crop.fits"))
@@ -155,14 +160,15 @@ end
     mav_cube = MultiAnnulusView(cube .- minimum(cube), fwhm; inner=fwhm)
 
     # orient algorithms with appropriate data structures
+    ncomp = _ncomps[epoch]
     targets = [
         (Classic(), av_cube, "median"),
-        (PCA(2), av_cube, "PCA(2)"),
-        (NMF(2), av_cube, "NMF(2)"),
-        (GreeDS(2), av_cube, "GreeDS(2)"),
+        (PCA(ncomp), av_cube, "PCA($ncomp)"),
+        (NMF(ncomp), av_cube, "NMF($ncomp)"),
+        (GreeDS(ncomp), av_cube, "GreeDS($ncomp)"),
         (Framewise(Classic(), delta_rot=0.5), mav_cube, "annular median"),
-        (Framewise(PCA(2), delta_rot=0.5), mav_cube, "annular PCA(2)"),
-        (Framewise(NMF(2), delta_rot=0.5), mav_cube, "annular NMF(2)"),
+        (Framewise(PCA(ncomp), delta_rot=0.5), mav_cube, "annular PCA($ncomp)"),
+        (Framewise(NMF(ncomp), delta_rot=0.5), mav_cube, "annular NMF($ncomp)"),
     ]
 
     contrast_curves = Dict{String, Any}()

@@ -66,7 +66,9 @@ axs.plot($(distances[3]), $(masses[3]), c="C5", label="  2020-11-28\nannular PCA
 axs.plot($(distances[3]), $(masses_corr[3]), c="C5", ls="--")
 
 ylims=axs.get_ylim()
-axs.vlines(1.5, *ylims, color="k", alpha=0.5, ls="-.", label="  dynamic limit")
+axs.vlines(1.5, *ylims, color="k", alpha=0.5, ls="-.")
+mid = (ylims[0] + ylims[1]) / 2
+axs.text(1.45, mid, "dynamic stability limit", color="k", alpha=0.5, va="center", ha="left", rotation="vertical")
 
 xlims = axs.get_xlim()
 axs.hlines(0.0005 * 1047.9, *xlims, color="k", alpha=0.3, linestyle=":", label="model mass limit")

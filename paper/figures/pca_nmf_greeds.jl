@@ -17,17 +17,32 @@ pxscale = 0.01 # arcsec / px
 auscale = pxscale / parallax # AU / px
 
 
+_label(a::Type{<:PCA}) = "PCA"
+_label(a::Type{<:NMF}) = "NMF"
+_label(a::Type{<:GreeDS}) = "GreeDS"
+
+_epochs = Dict(
+    "2020feb04" => "2020-02-04",
+    "2020nov21" => "2020-11-21",
+    "2020nov28" => "2020-11-28"
+)
+
 function plot_mosaic(res_cubes, angles; epoch, label, ncomps)
     py"""
     import proplot as pro
     fig, axs = pro.subplots(nrows=2, ncols=5, share=3, width="7.5in", space=0)
     """
     i = 0
-    for (n, res) in zip(res_cubes, ncomps)
+    flats = collapse.(res_cubes, Ref(angles))
+    vmax = mapreduce(maximum, max, flats)
+    vmin = mapreduce(minimum, min, flats)
+
+
+    for (n, flat) in zip(ncomps, flats)
         lab = "ncomp=$n"
-        flat = collapse(res, angles)
+        
         py"""
-        axs[$i].imshow($flat)
+        m = axs[$i].imshow($flat, vmin=$vmin, vmax=$vmax)
         axs[$i].text(6, 6, $lab, color="w")
         """
         i += 1
@@ -36,70 +51,70 @@ function plot_mosaic(res_cubes, angles; epoch, label, ncomps)
     ticks = range(40, 159, length=3)
     tick_labs = @. string(round(pxscale * (ticks - 99.5), digits=1))
 
+    figname = make_filename_friendly(figuredir("reports", "$(epoch)_$(label)_mosaic.pdf"))
     py"""
     axs.format(
         yticks=$ticks,
         yticklabels=$tick_labs,
-        ylabel="y [arcsec]"
+        ylabel="y [arcsec]",
         xticks=$ticks,
         xticklabels=$tick_labs,
         xlabel="x [arcsec]",
     )
-    fig.savefig($(figuredir(make_filename_friendly("$(epoch)_$(label)_mosaic") * ".pdf")))
+    fig.colorbar(m, loc="r")
+    fig.savefig($figname)
     """
 end
 
 function plot_results(res_cubes, angles, contrast_curves; epoch, label, fwhm)
     py"""
     import proplot as pro
-    fig, axs = pro.subplots([[1, 3], [2, 3]], share=0, width="7.5in")
-    cycle = pro.Cycle("viridis", $(length(res_cubes)))
+    fig, axs = pro.subplots([[1, 3, 3], [2, 3, 3]], share=0, width="7.5in")
+    cycle = pro.Cycle("viridis_r", $(length(res_cubes)))
     lines = []
     """
     # plot the average STIM map and SLIM probability map
     ticks = range(20, 179, length=5)
     tick_labs = @. string(round(pxscale * (ticks - 99.5), digits=1))
 
-    stimmap, slimmask = slimmap(res_cubes, angles; N=cil(Int, π/4 * fwhm^2))
+    stimmap, slimmask = slimmap(res_cubes, angles; N=ceil(Int, π/4 * fwhm^2))
     slimprob = stimmap .* slimmask
     py"""
     axs[0].imshow($stimmap, vmin=0, vmax=1)
     axs[0].text(6, 6, "mean STIM", color="w")
     m = axs[1].imshow($slimprob, vmin=0, vmax=1)
     axs[1].text(6, 6, "SLIM map", color="w")
-    fig.colorbar(m, loc="l")
+    fig.colorbar(m, loc="l", label="STIM probability")
 
     axs[0].format(
-        ylabel="y [arcsec]"
-        yticks=$ticks
-        yticklabels=$tick_labs
+        ylabel="y [arcsec]",
+        yticks=$ticks,
+        yticklabels=$tick_labs,
         xticks="null"
     )
     axs[1].format(
-        ylabel="y [arcsec]"
-        xlabel="x [arcsec]"
-        yticks=$ticks
-        yticklabels=$tick_labs
-        xticks=$ticks
-        yticklabels=$tick_labs
+        ylabel="y [arcsec]",
+        xlabel="x [arcsec]",
+        yticks=$ticks,
+        yticklabels=$tick_labs,
+        xticks=$ticks,
+        xticklabels=$tick_labs
     )
     """
     # now plot contrast curves
-    i = 0
-    for (label, curve) in contrast_curves
+    for curve in contrast_curves
         dist = curve.distance .* auscale
-        color = "C$i"
         py"""
-        l = axs[2].plot($dist, $(curve.contrast), cycle=cycle, color=$color)
-        lines.append(l)
+        l = axs[2].plot($dist, $(curve.contrast), cycle=cycle)
+        lines.extend(l)
         """
-        i += 1
     end
+    figname = make_filename_friendly(figuredir("reports", "$(epoch)_$(label)_contrast_curves.pdf"))
     py"""
     axs[2].text(0.25, 5e-4, $(_epochs[epoch]), fontsize=14)
-    fig.colorbar(lines, loc="r", label="ncomp")
-    axs.dualx(lambda x: x * $parallax, label="separation [arcsec]")
-    ax2 = axs.alty(
+    fig.colorbar(lines, loc="r", label="ncomp", values=range(1, 11))
+    axs[2].dualx(lambda x: x * $parallax, label="separation [arcsec]")
+    ax2 = axs[2].alty(
         yticks=[0.09, 0.31, 0.54, 0.77, 1],
         yticklabels=["8", "6", "4", "2", "0"],
         label="Δ mag"
@@ -113,7 +128,7 @@ function plot_results(res_cubes, angles, contrast_curves; epoch, label, fwhm)
         ylabel="5σ contrast",
         grid=True
     )
-    fig.savefig($(figuredir(make_filename_friendly("$(epoch)_$(label)_contrast_curves") * ".pdf")))
+    fig.savefig($figname)
     """
 end
 
@@ -143,24 +158,28 @@ end
 
     ncomps = 1:10
     @progress name="algorithm" for alg in [PCA, NMF, GreeDS]
-        @withprogress name="ncomp" begin
-        i = 1
-        N = length(ncomps)
-        outputs = map(ncomps) do n
-            res_cube = subtract(alg(n), av_cube; angles, fwhm)
-            cc = contrast_curve(alg, target, angles, psf_model; fwhm, angles, starphot, nbranches=6)
-            @logprogress i/N
-            i += 1
-            res_cube, cc
-        end
-        res_cubes = map(r -> r[1], outputs)
-        contrast_curves = map(r -> r[1], outputs)
         label = _label(alg)
-        plot_mosaic(res_cubes, angles; epoch, label, ncomps)
-        plot_results(res_cubes, angles, contrast_curves; epoch, label, fwhm)
+        @withprogress name="ncomp" begin
+            i = 1
+            N = length(ncomps)
+            outputs = map(ncomps) do n
+                _alg = alg(n)
+                fname = make_filename_friendly(datadir("epoch_$epoch", "residuals", "$(epoch)_sirius-b_residual_$label-$n.fits"))
+                res_cube = load_or_produce(fname) do
+                    subtract(_alg, av_cube; angles, fwhm)
+                end
+                fname_cc = make_filename_friendly(datadir("epoch_$epoch", "residuals", "$(epoch)_sirius-b_contrast-curve_$label-$n.csv"))
+                cc = load_or_produce(fname_cc) do
+                    contrast_curve(_alg, av_cube, angles, psf_model; fwhm, angles, starphot, nbranch=6)
+                end
+                @logprogress i/N
+                i += 1
+                res_cube, cc
+            end
+            res_cubes = map(first, outputs)
+            contrast_curves = map(last, outputs)
+            plot_mosaic(res_cubes, angles; epoch, label, ncomps)
+            plot_results(res_cubes, angles, contrast_curves; epoch, label, fwhm)
+        end
     end
 end
-
-_label(a::Type{<:PCA}) = "PCA"
-_label(a::Type{<:NMF}) = "NMF"
-_label(a::Type{<:GreeDS}) = "GreeDS"

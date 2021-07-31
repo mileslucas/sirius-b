@@ -11,8 +11,6 @@ using PyCall
 export rootdir, datadir, srcdir, notebookdir, paperdir, figuredir, load_or_produce,
        parallactic_angles, gaussian_fit, gaussian_fit_offset, center
 
-const PYFITS = pyimport("astropy.io.fits")
-
 # path configuration
 rootdir(args...) = joinpath(@__DIR__(), "..", args...)
 datadir(args...) = rootdir("data", args...)
@@ -52,7 +50,10 @@ function load_or_produce(func, filename; force=false)
 end
 
 
-load_fits(filename; kwargs...) = Array(PYFITS.getdata(filename; kwargs...))
+function load_fits(filename; kwargs...)
+    PYFITS = pyimport("astropy.io.fits")
+    Array(PYFITS.getdata(filename; kwargs...))
+end
 load_csv(filename; kwargs...) = DataFrame(CSV.File(filename; kwargs...))
 const LOADER = Dict(
     ".csv" => load_csv,
@@ -61,6 +62,7 @@ const LOADER = Dict(
 
 function save_fits(filename, data; kwargs...)
     mkpath(dirname(filename))
+    PYFITS = pyimport("astropy.io.fits")
     PYFITS.writeto(filename, Array(data); overwrite=true, kwargs...)
 end
 function save_csv(filename, data; kwargs...)
