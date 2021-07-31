@@ -40,3 +40,7 @@ Then, to set up the Julia requirements
 ## Usage
 
 The processing and analysis code is all located in `notebooks`. The order is `preprocessing` > `psf_subtraction`. Some helper library code is located in `src`. All of the paper figures were produced from scripts in `paper/figures`.
+
+## Appendix figure sets
+
+Many figures were excluded from the PDF version of the paper for brevity. The ADI processing reports are in `paper/figures/reports`, along with the PCA/NMF/GreeDS mosaics and reports.
