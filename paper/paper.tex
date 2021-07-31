@@ -120,7 +120,7 @@ During each observation, we took calibration frames in the form of dark frames a
 
 For each epoch we applied a flat correction using calibration frames captured during observing. We also removed bad pixels using a combination of L.A.Cosmic \citep{van_dokkum_cosmic-ray_2001} and an adaptive sigma-clipping algorithm. We removed sky background using a high-pass median filter with a box size of 31 pixels. For both the November epochs we tried exploiting the large focal plane drifts by dithering between two positions in order to simplify background subtraction, but this ended up performing worse than the high-pass filter. At this point frames were manually selected to remove bad frames, especially those with diffraction spikes from Sirius A within a few hundred pixels, like in \autoref{fig:spike}. Then, each good frame was co-registered to sub-pixel accuracy using the algorithm presented in \citet{guizar-sicairos_efficient_2008}, followed by fitting each frame with a Gaussian PSF to reach floating-point centroid accuracy.
 
-The co-registered frames are then shifted to the center of the FOV. Lastly the frames were cropped to the inner 200 pixels and stacked into data cubes for each epoch. With a pixel scale of \qty{10}{\milliarcsecond} the crop corresponds to a maximum separation of \ang{;;1} or a projected separation of \qty{2.7}{\au}. We also measure the parallactic angle of each frame, including corrections for distortion effects following \citet{yelda_improving_2010}. For each epoch, we measure the full-width at half-maximum (FWHM) of the stellar PSF for use in post-processing by fitting a bivariate Gaussian model to the median frame from each data cube (\autoref{fig:psf}). All of the pre-processing code is available in Jupyter notebooks at the following GitHub repository\footnote{\href{https://github.com/mileslucas/sirius-b}{https://github.com/mileslucas/sirius-b}} and the pre-processed data cubes and parallactic angles are available on Zenodo\footnote{\citealt{lucas_nirc2_2021}}.
+The co-registered frames are then shifted to the center of the FOV. Lastly the frames were cropped to the inner 200 pixels and stacked into data cubes for each epoch. With a pixel scale of \qty{10}{\milliarcsecond} the crop corresponds to a maximum separation of \ang{;;1} or a projected separation of \qty{2.7}{\au}. We also measure the parallactic angle of each frame, including corrections for distortion effects following \citet{yelda_improving_2010}. For each epoch, we measure the full-width at half-maximum (FWHM) of the stellar PSF for use in post-processing by fitting a bivariate Gaussian model to the median frame from each data cube (\autoref{fig:psf}). All of the pre-processing code is available in Jupyter notebooks at the following GitHub repository\footnote{\href{https://github.com/mileslucas/sirius-b}{https://github.com/mileslucas/sirius-b}} and the pre-processed data cubes and parallactic angles are available on Zenodo:\dataset[10.5281/zenodo.5115225]{\doi{10.5281/zenodo.5115225}}.
 
 \begin{figure}
     \centering
@@ -183,6 +183,7 @@ The contrast maps from the best performing algorithm for each reduction are show
     \label{fig:contrast}
 \end{figure*}
 
+\pagebreak
 \section{Conclusions} \label{sec:conclusion}
 
 In closing, the Sirius system is one of the most well studied in history, with Sirius B being the target of companion searches from the visible to the IR. While it is highly unlikely a first-generation planet survived post-MS evolution, imaging efforts have gradually increased the sensitivity to second-generation planets. In this work we present high-contrast images of Sirius B in the near-IR. Our sensitivity limits are the best that have been reached for Sirius B, reaching \qty{0.6}{\jupitermass} at \qty{1.5}{\au}. In the mid-IR previous works have only probed as close-in as $\sim$\qty{1}{\au}, where we reach a sensitivity of \qty{0.72}{\jupitermass}. Despite the high sensitivity of this study, we found no appreciable evidence for a companion around Sirius B, consistent with previous results. This non-detection is compelling for revising occurrence rates of second-generation planets and debris disks around white dwarfs.
@@ -192,8 +193,10 @@ In recent years improving contrast and inner working angle were the dominant par
 We have published alongside this work the entire codebase used for pre-processing and reducing the data, and for generating every figure in this manuscript. We have also published our reduced datasets under an open license. We hope that this improves the reproducibility of the work as well as providing data for exploring new and different ADI algorithms.
 
 \begin{acknowledgments}
-
+The data presented herein were obtained at the W. M. Keck Observatory, which is operated as a scientific partnership among the California Institute of Technology, the University of California and the National Aeronautics and Space Administration. The Observatory was made possible by the generous financial support of the W. M. Keck Foundation. The authors wish to recognize and acknowledge the very significant cultural role and reverence that the summit of Maunakea has always had within the indigenous Hawaiian community.  We are most fortunate to have the opportunity to conduct observations from this mountain. 
 \end{acknowledgments}
+
+\facility{Keck:II (NIRC2)} 
 
 \software{
 ADI.jl \citep{lucas_adijl_2020},
