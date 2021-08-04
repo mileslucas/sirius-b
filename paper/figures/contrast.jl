@@ -74,8 +74,8 @@ axs.plot($(distances[3]), $(masses[3]), c="C5", label="  2020-11-28\nannular PCA
 axs.plot($(distances[3]), $(masses_corr[3]), c="C5", ls="--")
 
 # error cross
-axs.scatter(0.7, 3, alpha=0, barcolor="k", capsize=2, bardata=$average_error)
-axs.text(0.73, 3, "mean uncertainty from age", fontsize=10, color="k", alpha=0.8, va="center")
+axs.scatter(0.7, 5, alpha=0, barcolor="k", capsize=2, bardata=$average_error)
+axs.text(0.73, 5, "mean uncertainty from age", fontsize=10, color="k", alpha=0.8, va="center")
 
 # stability limit
 ylims=axs.get_ylim()

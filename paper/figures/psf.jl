@@ -40,7 +40,7 @@ axs.imshow($psf,
     norm=LogNorm(vmin=3e-3, vmax=5e-2),
     colorbar="r",
 )
-axs.format(title="Epoch 2020-11-21")
+# axs.format(title="Epoch 2020-11-21")
 axs.format(
     xticks=$tick_locs,
     xticklabels=$tick_labs,

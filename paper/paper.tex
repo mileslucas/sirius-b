@@ -46,7 +46,7 @@
 
 
 \begin{abstract}
-We present deep imaging of Sirius B, the closest and brightest white dwarf. We use Keck/NIRC2 in Lp-band (\qty{3.776}{\micro\meter}) across 3 epochs in 2020 using the technique of angular differential imaging. We reach sub-Jupiter sensitivities and sub-AU separations, reaching $\sim$\qty{3.5}{\jupitermass} at $\sim$\qty{0.25}{\au} down to a sensitivity of $\sim$\qty{0.6}{\jupitermass} at $\sim$\qty{1.5}{\au}. The uncertainty in mass sensitivity is below \qty{0.1}{\jupitermass} due to the high-precision of the Sirius B system age. We do not detect any companions around Sirius B, consistent with previous studies.
+We present deep imaging of Sirius B, the closest and brightest white dwarf. We use Keck/NIRC2 in Lp-band (\qty{3.776}{\micro\meter}) across 3 epochs in 2020 using the technique of angular differential imaging. We reach sub-Jupiter sensitivities and sub-AU separations, reaching \qty{3.5}{\jupitermass} at \qty{0.25}{\au} down to a sensitivity of \qty{0.6}{\jupitermass} at \qty{1.5}{\au}. The uncertainty in mass sensitivity is below \qty{0.1}{\jupitermass} due to the high-precision of the Sirius B system age. We do not detect any companions around Sirius B, consistent with previous studies.
 \end{abstract}
 
 \section{Introduction} \label{sec:intro}
@@ -57,7 +57,7 @@ Typical targets for imaging are nearby young stars; the close proximity means th
 
 \section{Post-MS Evolution}
 
-There is limited knowledge of planetary systems around evolved stars. \citet{burleigh_imaging_2002,veras_post-main-sequence_2016} suggests exoplanets on initially wide ($>$\qty{5}{\au}) orbits around intermediate mass stars will survive expansion during the RGB phase. Close-in planets that escape the Roche limit of the expanding red giant can still be shredded by tidal forces, although the tidal forces on planets that readily escape engulfment are negligible \citep{nordhaus_orbits_2013}. During the AGB phase, stellar mass loss will adiabatically expand the orbit of the planet by a maximum factor of $M_{*,\mathrm{MS}}/M_{*,\mathrm{WD}}$ \citep{jeans_cosmogonic_1924}. In addition to \textit{first-generation} planets there are potential methods for \textit{second-generation} planets to form after the violent RGB and AGB phases \citep{perets_second_2010}.
+There is limited knowledge of planetary systems around evolved stars. \citet{burleigh_imaging_2002,veras_post-main-sequence_2016} suggest exoplanets on initially wide ($>$\qty{5}{\au}) orbits around intermediate mass stars will survive expansion during the RGB phase. Close-in planets that escape the Roche limit of the expanding red giant can still be shredded by tidal forces, although the tidal forces on planets that readily escape engulfment are negligible \citep{nordhaus_orbits_2013}. During the AGB phase, stellar mass loss will adiabatically expand the orbit of the planet by a maximum factor of $M_{*,\mathrm{MS}}/M_{*,\mathrm{WD}}$ \citep{jeans_cosmogonic_1924}. In addition to \textit{first-generation} planets there are potential methods for \textit{second-generation} planets to form after the violent RGB and AGB phases \citep{perets_second_2010}.
 
 The first search for substellar companions around white dwarfs was conducted by \citet{probst_infrared_1983} by searching for infrared (IR) excess in their spectral energy distributions (SED) using broadband photometry. They found no companions around the $\sim$100 white dwarfs they studied. The same method was applied by \citet{zuckerman_excess_1987} who found excess IR emission around white dwarf G29-38. Eventually this excess was determined to be from a dust disk \citep{telesco_observations_1990} and the current interpretation associates the dust with accretion onto the white dwarf, polluting the stellar atmosphere \citep{koester_metals_1997}.
 
@@ -81,12 +81,6 @@ In this work we report direct images of Sirius B with Keck/NIRC2. \autoref{sec:o
 
 \section{Observations} \label{sec:obs}
 
-Despite Sirius B being the brightest white dwarf in the sky, it is still 10 magnitudes fainter than Sirius A, making it a technically challenging target, especially on ground-based telescopes. We directly imaged Sirius B with Keck/NIRC2 in Lp-band (\qty{3.776}{\micro\meter}) across three epochs in 2020 (\autoref{tbl:obs}). Our first attempt to observe Sirius B failed due to the strong scattered light from Sirius A. The adaptive optics (AO) calibration failed when the scattered light from Sirius A would sweep into the FOV of the wavefront sensor (WFS). Similarly, trying to deploy the focal-plane vortex coronagraph \citep{serabyn_w_2017} failed when the coronagraphic pointing control algorithm, QACITS \citep{huby_w_2017}, performed erratically in the presence of the scattered light. \citet[\S2]{vigan_high-contrast_2015} reported similar issues in their attempts to image Sirius B coronagraphically. In order to overcome these obstacles, we decided to try using Sirius A as the AO guide star and off-axis guiding to Sirius B.
-
-The Keck AO system \citep{wizinowich_performance_2000} was saturated by Sirius A, so we attenuated the flux using a narrow laser-line filter to avoid saturating the WFS. While still bright (appearing like a $\sim$5 magnitude star on the WFS), this was enough attenuation to close the AO loop. From here, we slewed off-axis using the separations and position angles calculated in \autoref{tbl:obs} from the orbital parameters in \cite{bond_sirius_2017}. In this mode, we noticed higher than usual drift in the focal plane, requiring manually recentering the target every 5 or 10 minutes. We tried deploying the vortex coronagraph along with QACITS, but the diffracted light from Sirius A made QACITS unstable, so we decided to forego any coronagraphy for the remaining observations.
-
-During each observation, we took dark frames and sky flat frames for calibration. We also disabled the field rotator, which caused the FOV to rotate throughout the night for angular differential imaging \citep[ADI;][]{marois_angular_2006}.
-
 \begin{deluxetable*}{ccccccccc}
     \tabletypesize{\small}
     \tablecaption{Observing parameters for the three epochs of data. All observations were carried out using the NIRC2 Lp-band filter. Observation time is based on the frames that were selected for processing. Seeing values are measured at \qty{0.5}{\micro\meter} using a differential image motion monitor (DIMM) and averaged over the observing session. Seeing values, temperature, and water vapor measurements are all provided by the Maunakea weather center forecast archive.
@@ -109,14 +103,6 @@ During each observation, we took dark frames and sky flat frames for calibration
     \enddata
 \end{deluxetable*}
 
-\section{Analysis} \label{sec:analysis}
-
-\subsection{Pre-processing}
-
-The raw images from NIRC2 required pre-processing before analyzing them for companions. For each epoch we applied a flat correction using calibration frames captured during observing. We also removed bad pixels using a combination of L.A.Cosmic \citep{van_dokkum_cosmic-ray_2001} and an adaptive sigma-clipping algorithm. We removed sky background using a high-pass median filter with a box size of 31 pixels. For both the November epochs we tried exploiting the large focal plane drifts by dithering between two positions in order to simplify background subtraction, but this ended up performing worse than the high-pass filter. At this point frames were manually selected to remove bad frames, especially those with diffraction spikes from Sirius A within a few hundred pixels, like in \autoref{fig:spike}. Then, each good frame was co-registered to sub-pixel accuracy using the algorithm presented in \citet{guizar-sicairos_efficient_2008}, followed by fitting each frame with a Gaussian PSF to reach floating-point centroid accuracy.
-
-The co-registered frames are then shifted to the center of the FOV. Lastly the frames were cropped to the inner 200 pixels and stacked into data cubes for each epoch. With a pixel scale of \qty{10}{\milliarcsecond} the crop corresponds to a maximum separation of \ang{;;1} or a projected separation of \qty{2.7}{\au}. We also measure the parallactic angle of each frame, including corrections for distortion effects following \citet{yelda_improving_2010}. For each epoch, we measure the full-width at half-maximum (FWHM) of the stellar PSF for use in post-processing by fitting a bivariate Gaussian model to the median frame from each data cube (\autoref{fig:psf}). All of the pre-processing code is available in Jupyter notebooks in a GitHub repository (\href{https://github.com/mileslucas/sirius-b}{https://github.com/mileslucas/sirius-b}) and the pre-processed data cubes and parallactic angles are available on Zenodo:\dataset[10.5281/zenodo.5115225]{\doi{10.5281/zenodo.5115225}}.
-
 \begin{figure}
     \centering
     \epsscale{1.1}
@@ -125,9 +111,6 @@ The co-registered frames are then shifted to the center of the FOV. Lastly the f
     \label{fig:spike}
 \end{figure}
 
-\subsection{Post-processing}
-
-
 \begin{figure}
     \centering
     \epsscale{1.1}
@@ -135,6 +118,22 @@ The co-registered frames are then shifted to the center of the FOV. Lastly the f
     \caption{The median frame from the second epoch showing the instrumental PSF. The inner core has a FWHM of $\sim$\qty{76}{\milliarcsecond}. The speckle pattern is shown in the blobs surrounding the first ring, with roughly 6-way radial symmetry corresponding to the hexagonal shape of the primary mirror.}
     \label{fig:psf}
 \end{figure}
+
+Despite Sirius B being the brightest white dwarf in the sky, it is still 10 magnitudes fainter than Sirius A, making it a technically challenging target, especially on ground-based telescopes. We directly imaged Sirius B with Keck/NIRC2 in Lp-band (\qty{3.776}{\micro\meter}) across three epochs in 2020 (\autoref{tbl:obs}). Our first attempt to observe Sirius B failed due to the strong scattered light from Sirius A. The adaptive optics (AO) calibration failed when the scattered light from Sirius A would sweep into the FOV of the wavefront sensor (WFS). Similarly, trying to deploy the focal-plane vortex coronagraph \citep{serabyn_w_2017} failed when the coronagraphic pointing control algorithm, QACITS \citep{huby_w_2017}, performed erratically in the presence of the scattered light. \citet[\S2]{vigan_high-contrast_2015} reported similar issues in their attempts to image Sirius B coronagraphically. In order to overcome these obstacles, we decided to try using Sirius A as the AO guide star and off-axis guiding to Sirius B.
+
+The Keck AO system \citep{wizinowich_performance_2000} was saturated by Sirius A, so we attenuated the flux using a narrow laser-line filter to avoid saturating the WFS. While still bright (appearing like a $\sim$5 magnitude star on the WFS), this was enough attenuation to close the AO loop. From here, we slewed off-axis using the separations and position angles calculated in \autoref{tbl:obs} from the orbital parameters in \citet{bond_sirius_2017}. In this mode, we noticed higher than usual drift in the focal plane, requiring manually recentering the target every 5 or 10 minutes. We tried deploying the vortex coronagraph along with QACITS, but the diffracted light from Sirius A made QACITS unstable, so we decided to forego any coronagraphy for the remaining observations.
+
+During each observation, we took dark frames and sky flat frames for calibration. We also disabled the field rotator, which caused the FOV to rotate throughout the night for angular differential imaging \citep[ADI;][]{marois_angular_2006}.
+
+\section{Analysis} \label{sec:analysis}
+
+\subsection{Pre-processing}
+
+The raw images from NIRC2 required pre-processing before analyzing them for companions. For each epoch we applied a flat correction using calibration frames captured during observing. We also removed bad pixels using a combination of L.A.Cosmic \citep{van_dokkum_cosmic-ray_2001} and an adaptive sigma-clipping algorithm. We removed sky background using a high-pass median filter with a box size of 31 pixels. For both the November epochs we tried exploiting the large focal plane drifts by dithering between two positions in order to simplify background subtraction, but this ended up performing worse than the high-pass filter. At this point frames were manually selected to remove bad frames, especially those with diffraction spikes from Sirius A within a few hundred pixels, like in \autoref{fig:spike}. Then, each good frame was co-registered to sub-pixel accuracy using the algorithm presented in \citet{guizar-sicairos_efficient_2008}, followed by fitting each frame with a Gaussian PSF to reach floating-point centroid accuracy.
+
+The co-registered frames are then shifted to the center of the FOV. Lastly the frames were cropped to the inner 200 pixels and stacked into data cubes for each epoch. With a pixel scale of \qty{10}{\milliarcsecond} the crop corresponds to a maximum separation of \ang{;;1} or a projected separation of \qty{2.7}{\au}. We also measure the parallactic angle of each frame, including corrections for distortion effects following \citet{yelda_improving_2010}. For each epoch, we measure the full-width at half-maximum (FWHM) of the stellar PSF for use in post-processing by fitting a bivariate Gaussian model to the median frame from each data cube (\autoref{fig:psf}). All of the pre-processing code is available in Jupyter notebooks in a GitHub repository (\href{https://github.com/mileslucas/sirius-b}{https://github.com/mileslucas/sirius-b}) and the pre-processed data cubes and parallactic angles are available on Zenodo:\dataset[10.5281/zenodo.5115225]{\doi{10.5281/zenodo.5115225}}.
+
+\subsection{Post-processing}
 
 By taking data with the field rotator disabled (ADI), the point-spread function (PSF) will not appear to rotate while any potential companion will appear to rotate. This reduces the probability of subtracting companion signal when we subtract the stellar PSF model. After subtraction, the frames are derotated by their parallactic angle and combined with a weighted sum \citep{bottom_noise-weighted_2017}, which reduces the pixel-to-pixel noise as the number of frames in the data cube increases.
 
