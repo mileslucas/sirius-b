@@ -1297,7 +1297,7 @@ For more details, see:\\
 \fi
 \vskip 5.8mm plus 1mm minus 1mm
 \vskip1sp
-%\section*{Acknowledgments}
+\section*{acknowledgments}
 \noindent\ignorespaces}
 
 \def\endacknowledgements{
@@ -1308,7 +1308,7 @@ For more details, see:\\
 \ifanonymous
 \vskip 5.8mm plus 1mm minus 1mm
 \vskip1sp
-%\section*{Acknowledgements}
+\section*{acknowledgments}
 \centerline{(Acknowledgements anonymized for review)}
 \else
 \vbox{\unvbox\ackbox}

@@ -30,7 +30,7 @@ contrast_curves = [
 
 contrast_to_dmag(contrast) = -2.5 * log10(contrast)
 
-function dmag_to_mass(dmag)
+function dmag_to_mass(dmag, age)
     model.contrast_to_mass(
         deltaMag=dmag,
         age_Myr=age,
@@ -44,18 +44,26 @@ distances = [curve.distance .* auscale for curve in contrast_curves]
 
 masses = map(contrast_curves) do curve
     dmag = contrast_to_dmag.(curve.contrast)
-    dmag_to_mass.(dmag)
+    dmag_to_mass.(dmag, 225)
 end
 
 masses_corr = map(contrast_curves) do curve
     dmag = contrast_to_dmag.(curve.contrast_corr)
-    dmag_to_mass.(dmag)
+    dmag_to_mass.(dmag, 225)
+end
+
+average_error = mean(contrast_curves) do curve
+    dmag = contrast_to_dmag.(curve.contrast)
+    A = dmag_to_mass.(dmag, 225)
+    B = dmag_to_mass.(dmag, 250)
+    mean(abs.(A .- B))
 end
 
 py"""
 import proplot as pro
 fig, axs = pro.subplots(width="7.5in", height="4in")
 
+# curves
 axs.plot($(distances[1]), $(masses[1]), c="C0", label="  2020-02-04\n     median")
 axs.plot($(distances[1]), $(masses_corr[1]), c="C0", ls="--")
 
@@ -65,18 +73,24 @@ axs.plot($(distances[2]), $(masses_corr[2]), c="C1", ls="--")
 axs.plot($(distances[3]), $(masses[3]), c="C5", label="  2020-11-28\nannular PCA(2)")
 axs.plot($(distances[3]), $(masses_corr[3]), c="C5", ls="--")
 
+# error cross
+axs.scatter(0.7, 3, alpha=0, barcolor="k", capsize=2, bardata=$average_error)
+axs.text(0.73, 3, "mean uncertainty from age", fontsize=10, color="k", alpha=0.8, va="center")
+
+# stability limit
 ylims=axs.get_ylim()
-axs.vlines(1.5, *ylims, color="k", alpha=0.5, ls="-.")
+axs.vlines(1.5, *ylims, color="k", alpha=0.4, ls="-.")
 mid = (ylims[0] + ylims[1]) / 2
 axs.text(1.45, mid, "dynamic stability limit", color="k", alpha=0.5, va="center", ha="left", rotation="vertical")
 
+# model mass limit
 xlims = axs.get_xlim()
 axs.hlines(0.0005 * 1047.9, *xlims, color="k", alpha=0.3, linestyle=":", label="model mass limit")
 
+# formatting
 axs.dualx(lambda x: x * $parallax, label="separation [arcsec]")
 axs.legend(ncol=1)
 axs.format(
-    # yscale="log",
     xlabel="projected separation [AU]",
     ylabel="companion mass [M$_J$]",
     grid=True,
