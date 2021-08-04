@@ -34,7 +34,7 @@ py"""
 import proplot as pro
 from matplotlib.colors import LogNorm
 
-fig, axs = pro.subplots(figwidth="3.5in")
+fig, axs = pro.subplots(figwidth="4in")
 
 axs.imshow($psf, 
     norm=LogNorm(vmin=3e-3, vmax=5e-2),
