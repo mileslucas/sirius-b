@@ -1,7 +1,9 @@
 using CSV
 using DataFrames
+using Interpolations
 using PyCall
 using SiriusB
+using Statistics
 
 pro = pyimport("proplot")
 # rcParams
@@ -56,7 +58,7 @@ average_error = mean(contrast_curves) do curve
     dmag = contrast_to_dmag.(curve.contrast)
     A = dmag_to_mass.(dmag, 225)
     B = dmag_to_mass.(dmag, 250)
-    mean(abs.(A .- B))
+    mean(std([A B], dims=2))
 end
 
 py"""
@@ -74,33 +76,36 @@ axs.plot($(distances[3]), $(masses[3]), c="C5", label="  2020-11-28\nannular PCA
 axs.plot($(distances[3]), $(masses_corr[3]), c="C5", ls="--")
 
 # error cross
-axs.scatter(0.7, 5, alpha=0, barcolor="k", capsize=2, bardata=$average_error)
-axs.text(0.73, 5, "mean uncertainty from age", fontsize=10, color="k", alpha=0.8, va="center")
-
-# stability limit
-ylims=axs.get_ylim()
-axs.vlines(1.5, *ylims, color="k", alpha=0.4, ls="-.")
-mid = (ylims[0] + ylims[1]) / 2
-axs.text(1.45, mid, "dynamic stability limit", color="k", alpha=0.5, va="center", ha="left", rotation="vertical")
+axs.scatter(0.27, 0.73, alpha=0, barcolor="k", capsize=2, bardata=$average_error)
+axs.text(0.3, 0.73, "mean uncertainty from age", fontsize=10, color="k", alpha=0.8, va="center")
 
 # model mass limit
 xlims = axs.get_xlim()
 axs.hlines(0.0005 * 1047.9, *xlims, color="k", alpha=0.3, linestyle=":", label="model mass limit")
+axs.hlines($(1:2:13), *xlims, color="w", alpha=0.5, lw=0.75)
 
 # formatting
 axs.dualx(lambda x: x * $parallax, label="separation [arcsec]")
 axs.legend(ncol=1)
 axs.format(
+    yscale=pro.LogScale(base=2),
     xlabel="projected separation [AU]",
     ylabel="companion mass [M$_J$]",
     grid=True,
-    ylim=(0, ylims[1]),
     xlim=(xlims[0], 2),
     yticks="auto"
 )
 
-ax2 = axs.alty(reverse=True, label="Δ mag")
-ax2.plot($(distances[2]), $(contrast_to_dmag.(contrast_curves[2].contrast)), alpha=0)
+# stability limit
+ylims=axs.get_ylim()
+axs.vlines(1.5, *ylims, color="k", alpha=0.4, ls="-.")
+mid = $log2(ylims[0] + ylims[1]) - 1
+axs.text(1.45, mid, "dynamic stability limit", color="k", alpha=0.5, va="center", ha="left", rotation="vertical")
+axs.set_ylim(ylims)
+
+# ax2 = axs.alty(reverse=True, label="Δ mag")
+# ax2.plot($(distances[2]), $(log2.(contrast_to_dmag.(contrast_curves[2].contrast))), alpha=0)
 
 fig.savefig($(figuredir("contrast_curves.pdf")))
+pro.close(fig)
 """

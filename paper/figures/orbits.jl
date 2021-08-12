@@ -17,27 +17,22 @@ pro.rc["image.origin"] = "lower"
 pro.rc["image.cmap"] = "inferno"
 pro.rc["grid"] = false
 
-epochs = [
-    "2020feb04",
-    "2020nov21",
-    "2020nov28"
-]
-cubes = [
-    fits.getdata(datadir("epoch_$epoch", "processed", "$(epoch)_sirius-b_cube_calib_registered_crop.fits"))
-    for epoch in epochs
+res_cubes = [
+    fits.getdata(datadir("epoch_2020feb04", "residuals", "2020feb04_sirius-b_residual_median.fits")),
+    fits.getdata(datadir("epoch_2020nov21", "residuals", "2020nov21_sirius-b_residual_median.fits")),
+    fits.getdata(datadir("epoch_2020nov28", "residuals", "2020nov28_sirius-b_residual_annular_pca-2.fits")),
 ]
 angles = [
-    fits.getdata(datadir("epoch_$epoch", "processed", "$(epoch)_sirius-b_pa.fits"))
-    for epoch in epochs
+    fits.getdata(datadir("epoch_2020feb04", "processed", "2020feb04_sirius-b_pa.fits")),
+    fits.getdata(datadir("epoch_2020nov21", "processed", "2020nov21_sirius-b_pa.fits")),
+    fits.getdata(datadir("epoch_2020nov28", "processed", "2020nov28_sirius-b_pa.fits")),
 ]
 fwhms = [
     7.985399074538929,
     7.644946278252633,
     8.216162087416189
 ]
-av_cubes = [AnnulusView(cube; inner=fwhm) for (cube, fwhm) in zip(cubes, fwhms)]
-res_cubes = [subtract(GreeDS(2), av_cube; angles=angle) for (av_cube, angle) in zip(av_cubes, angles)]
-stims = [stimmap(res_cube, angle) for (res_cube, angle) in zip(res_cubes, angles)]
+# stims = [stimmap(res_cube, angle) for (res_cube, angle) in zip(res_cubes, angles)]
 flat_res = [collapse(res_cube, angle) for (res_cube, angle) in zip(res_cubes, angles)]
 
 parallax = 376.36801 # mas
@@ -48,9 +43,9 @@ errs = fwhms ./ 2
 
 # guesses from GreeDS outputs of three epochs
 pos = [
-    110.821 ± errs[1]  95.6414 ± errs[1];
-    111.024 ± errs[2]  94.5881 ± errs[2];
-    110.98 ± errs[3]  95.9881 ± errs[3];
+    110.21 ± errs[1]  93 ± errs[1];
+    89.5 ± errs[2]  105 ± errs[2];
+    92.5 ± errs[3]  111 ± errs[3];
 ] # px coordinates
 
 ctr = hcat(center(flat_res[1])...)
@@ -61,10 +56,10 @@ delta = delta_px .* pxscale
 ###
 # plot the epochs
 # first, zoom in
-crop_res = @. crop(stims, 50)
+crop_res = @. crop(flat_res, 50)
 
-tick_locs = range(5, 43, length=3)
-tick_labs = @. string(round(0.01 * (tick_locs - 24.5), digits=1))
+tick_locs = range(3, 46, length=5)
+tick_labs = @. string(round(pxscale / parallax * (tick_locs - 24.5), digits=1))
 
 
 pycenter = hcat(center(crop_res[1])...) .- 1
@@ -87,17 +82,17 @@ axs[1].format(title="Epoch 2020-11-21")
 axs[2].imshow($(crop_res[3]))
 axs[2].add_artist(plt.Circle( $(pos_py[3, :]), $(errs[3]), lw=2, color="w", fill=False))
 axs[2].format(title="Epoch 2020-11-28")
-
 axs.format(
     xticks=$tick_locs,
     xticklabels=$tick_labs,
     yticks=$tick_locs,
     yticklabels=$tick_labs,
-    xlabel="x [arcsec]",
-    ylabel="y [arcsec]",
+    xlabel="x [AU]",
+    ylabel="y [AU]",
 )
 
 fig.save($(figuredir("orbit_frames.pdf")))
+pro.close(fig)
 """
 
 
@@ -109,6 +104,11 @@ fig.save($(figuredir("orbit_frames.pdf")))
 dist = mapslices(norm, delta, dims=2)
 angs = mapslices(v -> atand(reverse(v)...) - 90, delta, dims=2)
 
+epochs = [
+    "2020feb04",
+    "2020nov21",
+    "2020nov28"
+]
 epochs_utc = [
     TTEpoch(2020, 2, 4),
     TTEpoch(2020, 11, 21),
@@ -142,7 +142,7 @@ mydriver = driver.Driver(
 )
 
 s = mydriver.sampler
-orbits = s.run_sampler(Int(1e6))
+orbits = s.run_sampler(Int(1e4))
 
 # orbit plot
 s.results.plot_orbits(start_mjd=epochs_mjd[1], num_orbits_to_plot=1000)
