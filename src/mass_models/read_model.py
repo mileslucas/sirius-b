@@ -7,9 +7,11 @@ import re
 import numpy as np
 from astropy.io import fits
 from astropy.table import Table
+import pandas as pd
 from scipy.interpolate import interp2d
 
-__all__ = ["MassModel"]
+__all__ = ["MassModel", "SONORAModel"]
+
 
 def Mj_to_solar(mass_MJ):
     return mass_MJ / 1047.9
@@ -97,14 +99,14 @@ class MassModel:
         self, prop_0=None, val_0=None, prop_1=None, val_1=None, prop_2=None
     ):
         """interpolate between any three properties.
-           prop0,val_0 -> dependent variable 0, with value val_0
-           prop1,val_1 -> dependent variable 1, with value val_1
-           prop2,      -> output variable.  for example:
-           m = MassModel('/Users/mbottom/Desktop/Coronagraphy/MassModels/model.BT-Settl.M-0.0.MKO.AB.txt')
-           m.interp_between(prop_0 = 'Age(Myr)', val_0 = 1000, prop_1 = "L'", val_1 = 7.091, prop_2 = 'M/Ms')
-           array([0.8])
-           says that at 1000 Myrs, for an L' value of 7.091, you would expect the mass to be 0.8 M*
-           """
+        prop0,val_0 -> dependent variable 0, with value val_0
+        prop1,val_1 -> dependent variable 1, with value val_1
+        prop2,      -> output variable.  for example:
+        m = MassModel('/Users/mbottom/Desktop/Coronagraphy/MassModels/model.BT-Settl.M-0.0.MKO.AB.txt')
+        m.interp_between(prop_0 = 'Age(Myr)', val_0 = 1000, prop_1 = "L'", val_1 = 7.091, prop_2 = 'M/Ms')
+        array([0.8])
+        says that at 1000 Myrs, for an L' value of 7.091, you would expect the mass to be 0.8 M*
+        """
 
         prop_0_below_table = self.get_below(prop_0, val_0)
         x0 = prop_0_below_table[prop_0].iloc[0]
@@ -200,3 +202,73 @@ class MassModel:
         return self.apparent_mag_to_mass(
             appmag=planet_app_mag, age_Myr=age_Myr, band=band, dist_pc=dist_pc
         )
+
+
+class SONORAModel(MassModel):
+    def __init__(self, filename, condgrid):
+        super().__init__(condgrid)
+        self.sonoragrid = pd.read_csv(
+            filename, header=0, delim_whitespace=True, comment="#"
+        )
+
+    def get_below_sonora(self, item, amt, subtable=None):
+        if subtable is None:
+            subtable = self.sonoragrid
+        ret = subtable.loc[subtable[item] <= amt][item].max()
+        if np.isnan(ret):
+            ret = subtable[item].min()
+        return subtable.loc[subtable[item] == ret]
+
+    def get_above_sonora(self, item, amt, subtable=None):
+        if subtable is None:
+            subtable = self.sonoragrid
+        ret = subtable.loc[subtable[item] > amt][item].min()
+        if np.isnan(ret):
+            ret = subtable[item].max()
+        return subtable.loc[subtable[item] == ret]
+
+    def interp_sonora(self, prop_0, val_0, prop_1, val_1, prop_2):
+        prop_0_below_table = self.get_below_sonora(prop_0, val_0)
+        x0 = prop_0_below_table[prop_0].iloc[0]
+        x1 = x0.copy()
+
+        sub0 = self.get_below_sonora(prop_1, val_1, subtable=prop_0_below_table)
+        y0 = float(sub0[prop_1])
+        z0 = float(sub0[prop_2])
+
+        sub1 = self.get_above_sonora(prop_1, val_1, subtable=prop_0_below_table)
+        y1 = float(sub1[prop_1])
+        z1 = float(sub1[prop_2])
+
+        prop_0_above_table = self.get_above_sonora(prop_0, val_0)
+        x2 = prop_0_above_table[prop_0].iloc[0]
+        x3 = x2.copy()
+
+        sub2 = self.get_below_sonora(prop_1, val_1, subtable=prop_0_above_table)
+        y2 = float(sub2[prop_1])
+        z2 = float(sub2[prop_2])
+
+        sub3 = self.get_above_sonora(prop_1, val_1, subtable=prop_0_above_table)
+        y3 = float(sub3[prop_1])
+        z3 = float(sub3[prop_2])
+
+        f = interp2d([x0, x1, x2, x3], [y0, y1, y2, y3], [z0, z1, z2, z3])
+        return float(f(val_0, val_1))
+
+    def absolute_mag_to_mass(self, absmag=None, age_Myr=None, band=None):
+        theband = self.band_abbrevs(band)
+        teff = self.interp_between(
+            prop_0="Age(Myr)",
+            val_0=age_Myr,
+            prop_1=theband,
+            val_1=absmag,
+            prop_2="Teff(K)",
+        )
+        mass_ms = self.interp_sonora(
+            prop_0="age(Gyr)",
+            val_0=age_Myr / 1000,
+            prop_1="Teff(K)",
+            val_1=teff,
+            prop_2="M/Msun",
+        )
+        return solar_to_Mj(mass_ms)

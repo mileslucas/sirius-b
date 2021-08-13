@@ -17,7 +17,11 @@ import sys
 sys.path.append($(srcdir()))
 """
 models = pyimport("mass_models")
-model = models.MassModel(srcdir("mass_models", "data", "model.AMES-Cond-2000.M-0.0.MKO.Vega.txt"))
+model_cond = models.MassModel(srcdir("mass_models", "data", "model.AMES-Cond-2000.M-0.0.MKO.Vega.txt"))
+model_sonora = models.SONORAModel(
+    srcdir("mass_models", "data", "tables_m+0.0_2018", "nc+0.0_co1.0_age"),
+    srcdir("mass_models", "data", "model.AMES-Cond-2000.M-0.0.MKO.Vega.txt")
+)
 
 parallax = 376.6801e-3 # arcseconds
 pxscale = 0.01 # arcseconds/px
@@ -32,7 +36,7 @@ contrast_curves = [
 
 contrast_to_dmag(contrast) = -2.5 * log10(contrast)
 
-function dmag_to_mass(dmag, age)
+function dmag_to_mass(dmag, age, model)
     model.contrast_to_mass(
         deltaMag=dmag,
         age_Myr=age,
@@ -46,18 +50,18 @@ distances = [curve.distance .* auscale for curve in contrast_curves]
 
 masses = map(contrast_curves) do curve
     dmag = contrast_to_dmag.(curve.contrast)
-    dmag_to_mass.(dmag, 225)
+    dmag_to_mass.(dmag, 225, model_cond)
 end
 
 masses_corr = map(contrast_curves) do curve
-    dmag = contrast_to_dmag.(curve.contrast_corr)
-    dmag_to_mass.(dmag, 225)
+    dmag = contrast_to_dmag.(curve.contrast)
+    dmag_to_mass.(dmag, 225, model_sonora)
 end
 
 average_error = mean(contrast_curves) do curve
     dmag = contrast_to_dmag.(curve.contrast)
-    A = dmag_to_mass.(dmag, 225)
-    B = dmag_to_mass.(dmag, 250)
+    A = dmag_to_mass.(dmag, 225, model_cond)
+    B = dmag_to_mass.(dmag, 250, model_cond)
     mean(std([A B], dims=2))
 end
 
@@ -106,6 +110,6 @@ axs.set_ylim(ylims)
 # ax2 = axs.alty(reverse=True, label="Δ mag")
 # ax2.plot($(distances[2]), $(log2.(contrast_to_dmag.(contrast_curves[2].contrast))), alpha=0)
 
-fig.savefig($(figuredir("contrast_curves.pdf")))
+fig.savefig($(figuredir("contrast_curves_compare.pdf")))
 pro.close(fig)
 """
