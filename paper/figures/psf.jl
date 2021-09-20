@@ -17,9 +17,8 @@ cube= fits.getdata(datadir("epoch_2020nov21", "processed", "2020nov21_sirius-b_c
 flat = collapse(cube)
 
 function norm_psf(frame)
-    tmp = frame .- minimum(frame)
+    tmp = frame .- minimum(frame) .+ 1
     return tmp ./ maximum(tmp)
-    # return log10.(tmp ./ maximum(tmp))
 end
 psf = norm_psf(flat)
 
