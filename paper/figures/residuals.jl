@@ -39,10 +39,6 @@ flat_res = collapse.(res, angles)
 sigs = detectionmap.(significance, flat_res, fwhms)
 stims = stimmap.(res, angles)
 
-parallax = 376.6801e-3 # arcseconds
-pxscale = 0.01 # arcsec / px
-auscale = pxscale / parallax # AU / px
-
 tick_locs = range(25, 174, length=5)
 tick_labs = @. string(round(auscale * (tick_locs - 99.5), digits=1))
 
@@ -100,6 +96,30 @@ axs.format(
 )
 
 fig.save($(figuredir("sig.pdf")))
+
+fig, axs = pro.subplots(ncols=3, wspace="1em", figwidth="7.5in")
+
+axs[0].imshow($(sigs[1]), vmin=3)#, colorbar="r", colorbar_kw=dict(space=0))
+axs[0].text(6, 6, "median", color="w")
+axs[0].format(title="Epoch 2020-02-04")
+axs[1].imshow($(sigs[2]), vmin=3)#, colorbar="r", vmin=0, colorbar_kw=dict(space=0))
+axs[1].text(6, 6, "median", color="w")
+axs[1].format(title="Epoch 2020-11-21")
+m= axs[2].imshow($(sigs[3]), vmin=3)#, colorbar="r", vmin=0, colorbar_kw=dict(space=0))
+axs[2].text(6, 6, "annular PCA(2)", color="w")
+axs[2].format(title="Epoch 2020-11-28")
+fig.colorbar(m, loc="r", label="significance")
+
+axs.format(
+    xticks=$tick_locs,
+    xticklabels=$tick_labs,
+    yticks=$tick_locs,
+    yticklabels=$tick_labs,
+    xlabel="x [AU]",
+    ylabel="y [AU]",
+)
+
+fig.save($(figuredir("sig_threshold.pdf")))
 """
 
 py"""
@@ -127,4 +147,28 @@ axs.format(
 )
 
 fig.save($(figuredir("stim.pdf")))
+
+fig, axs = pro.subplots(ncols=3, wspace="1em", figwidth="7.5in")
+
+axs[0].imshow($(stims[1]), vmin=0.5, vmax=1)#, colorbar="r", colorbar_kw=dict(space=0))
+axs[0].text(6, 6, "median", color="w")
+axs[0].format(title="Epoch 2020-02-04")
+axs[1].imshow($(stims[2]), vmin=0.5, vmax=1)#, colorbar="r", vmin=0, colorbar_kw=dict(space=0))
+axs[1].text(6, 6, "median", color="w")
+axs[1].format(title="Epoch 2020-11-21")
+m= axs[2].imshow($(stims[3]), vmin=0.5, vmax=1)#, colorbar="r", vmin=0, colorbar_kw=dict(space=0))
+axs[2].text(6, 6, "annular PCA(2)", color="w")
+axs[2].format(title="Epoch 2020-11-28")
+fig.colorbar(m, loc="r", label="STIM probability")
+
+axs.format(
+    xticks=$tick_locs,
+    xticklabels=$tick_labs,
+    yticks=$tick_locs,
+    yticklabels=$tick_labs,
+    xlabel="x [AU]",
+    ylabel="y [AU]",
+)
+
+fig.save($(figuredir("stim_threshold.pdf")))
 """
