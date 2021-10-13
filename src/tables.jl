@@ -52,7 +52,7 @@ function read_ATMO2020_grid(dir)
               "MKO_K", "MKO_Lp", "MKO_Mp", "W1", "W2", "W3", "W4", "IRAC_CH1", "IRAC_CH2"]
     
     full_table = mapreduce(vcat, filenames) do filename
-        mat = readdlm(joinpath("MKO_WISE_IRAC", filename), skipstart=2)
+        mat = readdlm(joinpath(dir, filename), skipstart=2)
         # a bunch of magnitudes listed with 0, treat as NaN
         @. mat[iszero(mat)] = NaN
         return DataFrame(mat, header)
