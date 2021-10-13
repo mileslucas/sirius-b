@@ -449,3 +449,5 @@ Manifest.toml
 *.fits*
 data
 .venv
+src/mass_models
+!src/mass_models/*.py
