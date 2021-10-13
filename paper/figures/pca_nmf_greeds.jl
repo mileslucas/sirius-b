@@ -12,11 +12,6 @@ pro.rc["image.cmap"] = "inferno"
 pro.rc["image.origin"] = "lower"
 pro.rc["grid"] = false
 
-parallax = 376.6801e-3 # arcseconds
-pxscale = 0.01 # arcsec / px
-auscale = pxscale / parallax # AU / px
-
-
 _label(a::Type{<:PCA}) = "PCA"
 _label(a::Type{<:NMF}) = "NMF"
 _label(a::Type{<:GreeDS}) = "GreeDS"
@@ -49,7 +44,7 @@ function plot_mosaic(res_cubes, angles; epoch, label, ncomps)
     end
 
     ticks = range(40, 159, length=3)
-    tick_labs = @. string(round(pxscale * (ticks - 99.5), digits=1))
+    tick_labs = @. string(round(SiriusB.pxscale * (ticks - 99.5), digits=1))
 
     figname = make_filename_friendly(figuredir("reports", "$(epoch)_$(label)_mosaic.pdf"))
     py"""
@@ -75,7 +70,7 @@ function plot_results(res_cubes, angles, contrast_curves; epoch, label, fwhm)
     """
     # plot the average STIM map and SLIM probability map
     ticks = range(20, 179, length=5)
-    tick_labs = @. string(round(pxscale * (ticks - 99.5), digits=1))
+    tick_labs = @. string(round(SiriusB.pxscale * (ticks - 99.5), digits=1))
 
     stimmap, slimmask = slimmap(res_cubes, angles; N=ceil(Int, π/4 * fwhm^2))
     slimprob = stimmap .* slimmask
@@ -103,7 +98,7 @@ function plot_results(res_cubes, angles, contrast_curves; epoch, label, fwhm)
     """
     # now plot contrast curves
     for curve in contrast_curves
-        dist = curve.distance .* auscale
+        dist = curve.distance .* SiriusB.auscale
         py"""
         l = axs[2].plot($dist, $(curve.contrast), cycle=cycle)
         lines.extend(l)
@@ -113,7 +108,7 @@ function plot_results(res_cubes, angles, contrast_curves; epoch, label, fwhm)
     py"""
     axs[2].text(0.25, 5e-4, $(_epochs[epoch]), fontsize=14)
     fig.colorbar(lines, loc="r", label="ncomp", values=range(1, 11))
-    axs[2].dualx(lambda x: x * $parallax, label="separation [arcsec]")
+    axs[2].dualx(lambda x: x * $(SiriusB.parallax), label="separation [arcsec]")
     ax2 = axs[2].alty(
         yticks=[0.09, 0.31, 0.54, 0.77, 1],
         yticklabels=["8", "6", "4", "2", "0"],

@@ -22,12 +22,8 @@ function norm_psf(frame)
 end
 psf = norm_psf(flat)
 
-parallax = 376.6801e-3 # arcseconds
-pxscale = 0.01 # arcsec / px
-auscale = pxscale / parallax # AU / px
-
 tick_locs = range(25, 174, length=5)
-tick_labs = @. string(round(auscale * (tick_locs - 99.5), digits=1))
+tick_labs = @. string(round(SiriusB.auscale * (tick_locs - 99.5), digits=1))
 
 py"""
 import proplot as pro

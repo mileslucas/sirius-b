@@ -12,10 +12,6 @@ pro.rc["image.cmap"] = "inferno"
 pro.rc["image.origin"] = "lower"
 pro.rc["grid"] = false
 
-parallax = 376.6801e-3 # arcseconds
-pxscale = 0.01 # arcsec / px
-auscale = pxscale / parallax # AU / px
-
 function plot_results(res_cube, angles, curve; fwhm, epoch, label)
     # produce images
     flat_res = collapse(res_cube, angles)
@@ -23,10 +19,10 @@ function plot_results(res_cube, angles, curve; fwhm, epoch, label)
     sig_map = detectionmap(significance, flat_res, fwhm)
     stim_map = stimmap(res_cube, angles)
 
-    arcsec = curve.distance .* pxscale
+    arcsec = curve.distance .* SiriusB.pxscale
 
     ticks = range(20, 179, length=5)
-    tick_labs = @. string(round(pxscale * (ticks - 99.5), digits=1))
+    tick_labs = @. string(round(SiriusB.pxscale * (ticks - 99.5), digits=1))
     # start plotting
     # NB: proplot does tricky things with the Axes class that doesn't play nicely
     # with PyCall.jl because it's treated as a Vector in Julia, so use Python
@@ -104,7 +100,7 @@ function plot_curves(contrast_curves; epoch)
     """
     i = 0
     for (label, curve) in contrast_curves
-        dist = curve.distance .* auscale
+        dist = curve.distance .* SiriusB.auscale
         color = "C$i"
         py"""
         axs.plot($dist, $(curve.contrast), color=$color, label=$label)
@@ -115,7 +111,7 @@ function plot_curves(contrast_curves; epoch)
     py"""
     axs.text(0.25, 5e-4, $(_epochs[epoch]), fontsize=14)
     axs.legend(ncol=2)
-    axs.dualx(lambda x: x * $parallax, label="separation [arcsec]")
+    axs.dualx(lambda x: x * $(SiriusB.parallax), label="separation [arcsec]")
     ax2 = axs.alty(
         yticks=[0.09, 0.31, 0.54, 0.77, 1],
         yticklabels=["8", "6", "4", "2", "0"],

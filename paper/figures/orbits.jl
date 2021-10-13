@@ -35,8 +35,8 @@ fwhms = [
 # stims = [stimmap(res_cube, angle) for (res_cube, angle) in zip(res_cubes, angles)]
 flat_res = [collapse(res_cube, angle) for (res_cube, angle) in zip(res_cubes, angles)]
 
-parallax = 376.36801 # mas
-pxscale = 10 # mas/px
+parallax = SiriusB.parallax * 1e3 # mas
+pxscale = SiriusB.pxscale * 1e3 # mas/px
 
 
 errs = fwhms ./ 2
@@ -136,9 +136,9 @@ mydriver = driver.Driver(
     "OFTI",
     1, # number of bodies
     3.081, # total system mass M_sun https://iopscience.iop.org/article/10.3847/1538-4357/aa6af8/pdf
-    parallax, # parallax in mas https://iopscience.iop.org/article/10.3847/1538-4357/aa6af8/pdf
+    parallax, # parallax in mas (EDR3)
     mass_err = 0.034,
-    plx_err = 1.4
+    plx_err = 0.2313347
 )
 
 s = mydriver.sampler

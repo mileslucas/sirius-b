@@ -16,9 +16,10 @@ epochs = [
     "2020nov21",
     "2020nov28"
 ]
-cubes = [
-    fits.getdata(datadir("epoch_$epoch", "processed", "$(epoch)_sirius-b_cube_calib_registered_crop.fits"))
-    for epoch in epochs
+res = [
+    fits.getdata(datadir("epoch_2020feb04", "residuals", "2020feb04_sirius-b_residual_median.fits")),
+    fits.getdata(datadir("epoch_2020nov21", "residuals", "2020nov21_sirius-b_residual_median.fits")),
+    fits.getdata(datadir("epoch_2020nov28", "residuals", "2020nov28_sirius-b_residual_annular_pca-2.fits")),
 ]
 angles = [
     fits.getdata(datadir("epoch_$epoch", "processed", "$(epoch)_sirius-b_pa.fits"))
@@ -30,17 +31,12 @@ fwhms = [
     8.216162087416189
 ]
 
-res = [
-    subtract(Classic(), AnnulusView(cubes[1]; inner=fwhms[1])),
-    subtract(Classic(), AnnulusView(cubes[2]; inner=fwhms[2])),
-    subtract(Framewise(PCA(2), delta_rot=0.5), MultiAnnulusView(cubes[3], fwhms[3]; inner=fwhms[3]); angles=angles[3])
-]
 flat_res = collapse.(res, angles)
 sigs = detectionmap.(significance, flat_res, fwhms)
 stims = stimmap.(res, angles)
 
 tick_locs = range(25, 174, length=5)
-tick_labs = @. string(round(auscale * (tick_locs - 99.5), digits=1))
+tick_labs = @. string(round(SiriusB.auscale * (tick_locs - 99.5), digits=1))
 
 py"""
 import proplot as pro
