@@ -3,13 +3,23 @@ module SiriusB
 using CSV
 using DataFrames
 using Dates
+using DelimitedFiles
+using Dierckx
 using FITSIO
 import ImageTransformations: center
 using SkyCoords
 using PyCall
 
 export rootdir, datadir, srcdir, notebookdir, paperdir, figuredir, load_or_produce,
-       parallactic_angles, gaussian_fit, gaussian_fit_offset, center
+       parallactic_angles, gaussian_fit, gaussian_fit_offset, center, table_interpolate, ATMO2020,
+       contrast_to_dmag, distance_modulus
+
+# constants associated with Sirius B
+const parallax = 374.48958852876103e-3 # arcsecond
+const distance = inv(parallax) # pc
+const pxscale = 0.01 # arcseconds/px
+const auscale = pxscale / parallax # AU/px
+const appmag = 9.01 # Ks band from Bonnet-Biduad 2008
 
 # path configuration
 rootdir(args...) = joinpath(@__DIR__(), "..", args...)
@@ -18,6 +28,10 @@ srcdir(args...) = rootdir("src", args...)
 notebookdir(args...) = rootdir("notebooks", args...)
 paperdir(args...) = rootdir("paper", args...)
 figuredir(args...) = paperdir("figures", args...)
+
+# simple calculations
+contrast_to_dmag(contrast) = -2.5log10(contrast)
+distance_modulus(distance) = 5log10(distance) - 5
 
 """
     load_or_produce(f, filename; force=false)
@@ -77,5 +91,6 @@ const SAVER = Dict(
 include("angles.jl")
 include("fitting.jl")
 include("badpix.jl")
+include("tables.jl")
 
 end
