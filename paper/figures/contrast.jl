@@ -12,17 +12,6 @@ pro.rc["image.origin"] = "lower"
 pro.rc["image.cmap"] = "inferno"
 pro.rc["grid"] = false
 
-py"""
-import sys
-sys.path.append($(srcdir()))
-"""
-models = pyimport("mass_models")
-model = models.MassModel(srcdir("mass_models", "data", "model.AMES-Cond-2000.M-0.0.MKO.Vega.txt"))
-
-parallax = 376.6801e-3 # arcseconds
-pxscale = 0.01 # arcseconds/px
-auscale = pxscale / parallax # AU/px
-age = 226; # Myr
 
 contrast_curves = [
     DataFrame(CSV.File(datadir("epoch_2020feb04", "residuals", "2020feb04_contrast-curve_median.csv"))),
@@ -30,82 +19,114 @@ contrast_curves = [
     DataFrame(CSV.File(datadir("epoch_2020nov28", "residuals", "2020nov28_contrast-curve_annular-pca-2.csv"))),
 ]
 
-contrast_to_dmag(contrast) = -2.5 * log10(contrast)
+# convert distances from pixels to AU
+distances = [curve.distance .* SiriusB.auscale for curve in contrast_curves]
 
-function dmag_to_mass(dmag, age)
-    model.contrast_to_mass(
-        deltaMag=dmag,
-        age_Myr=age,
-        band="Lp",
-        dist_pc=1/parallax,
-        stellar_apparent_mag=9.1
-    )
+function contrast_to_absmag(y)
+    Δmag = contrast_to_dmag(y)
+    appmag = SiriusB.appmag + Δmag
+    return appmag - distance_modulus(SiriusB.distance)
 end
 
-distances = [curve.distance .* auscale for curve in contrast_curves]
-
-masses = map(contrast_curves) do curve
-    dmag = contrast_to_dmag.(curve.contrast)
-    dmag_to_mass.(dmag, 225)
-end
-
-masses_corr = map(contrast_curves) do curve
-    dmag = contrast_to_dmag.(curve.contrast_corr)
-    dmag_to_mass.(dmag, 225)
-end
-
-average_error = mean(contrast_curves) do curve
-    dmag = contrast_to_dmag.(curve.contrast)
-    A = dmag_to_mass.(dmag, 225)
-    B = dmag_to_mass.(dmag, 250)
-    mean(std([A B], dims=2))
-end
-
+## plot each epoch as contrast/absolute mag
 py"""
 import proplot as pro
 fig, axs = pro.subplots(width="7.5in", height="4in")
 
 # curves
-axs.plot($(distances[1]), $(masses[1]), c="C0", label="2020-02-04")
-axs.plot($(distances[1]), $(masses_corr[1]), c="C0", ls="--")
+axs.plot($(distances[1]), $(contrast_curves[1].contrast), c="C0", label="2020-02-04")
+axs.plot($(distances[1]), $(contrast_curves[1].contrast_corr), c="C0", ls="--")
 
-axs.plot($(distances[2]), $(masses[2]), c="C1", label="2020-11-21")
-axs.plot($(distances[2]), $(masses_corr[2]), c="C1", ls="--")
+axs.plot($(distances[2]), $(contrast_curves[2].contrast), c="C1", label="2020-11-21")
+axs.plot($(distances[2]), $(contrast_curves[2].contrast_corr), c="C1", ls="--")
 
-axs.plot($(distances[3]), $(masses[3]), c="C5", label="2020-11-28")
-axs.plot($(distances[3]), $(masses_corr[3]), c="C5", ls="--")
-
-# error cross
-axs.scatter(0.27, 0.73, alpha=0, barcolor="k", capsize=2, bardata=$average_error)
-axs.text(0.3, 0.73, "mean uncertainty from age", fontsize=10, color="k", alpha=0.8, va="center")
-
-# model mass limit
-xlims = axs.get_xlim()
-axs.hlines(0.0005 * 1047.9, *xlims, color="k", alpha=0.3, linestyle=":", label="model mass limit")
-axs.hlines($(1:2:13), *xlims, color="w", alpha=0.5, lw=0.75)
+axs.plot($(distances[3]), $(contrast_curves[3].contrast), c="C5", label="2020-11-28")
+axs.plot($(distances[3]), $(contrast_curves[3].contrast_corr), c="C5", ls="--")
 
 # formatting
-axs.dualx(lambda x: x * $parallax, label="separation [arcsec]")
+axs.dualx(lambda x: x * $(SiriusB.parallax), label="separation [arcsec]")
 axs.legend(ncol=1)
 axs.format(
-    yscale=pro.LogScale(base=2),
+    yscale="log",
     xlabel="projected separation [AU]",
-    ylabel="companion mass [M$_J$]",
+    ylabel="contrast ",
     grid=True,
-    xlim=(xlims[0], 2),
-    yticks="auto"
+    yformatter="sci",
+    xlim=(None, 2),
 )
 
 # stability limit
 ylims=axs.get_ylim()
 axs.vlines(1.5, *ylims, color="k", alpha=0.4, ls="-.")
-mid = $log2(ylims[0] + ylims[1]) - 1
+mid = (ylims[0] + ylims[1]) / 40
+# print(mid)
 axs.text(1.45, mid, "dynamical stability limit", color="k", alpha=0.5, va="center", ha="left", rotation="vertical")
 axs.set_ylim(ylims)
 
-# ax2 = axs.alty(reverse=True, label="Δ mag")
-# ax2.plot($(distances[2]), $(log2.(contrast_to_dmag.(contrast_curves[2].contrast))), alpha=0)
+ax2 = axs.alty(reverse=True, label="abs. mag")
+ax2.plot($(distances[2]), $(contrast_to_absmag.(contrast_curves[2].contrast)), alpha=0)
 
 fig.savefig($(figuredir("contrast_curves.pdf")))
+pro.close(fig)
+"""
+
+for curve in contrast_curves
+    curve.absmags = contrast_to_absmag.(curve.contrast)
+    curve.masses_226 = map(curve.absmags) do absmag
+        table_interpolate(ATMO2020, :Age => 0.226, :MKO_Lp => absmag, :Mass_MJ)
+    end
+    curve.masses_125 = map(curve.absmags) do absmag
+        table_interpolate(ATMO2020, :Age => 0.125, :MKO_Lp => absmag, :Mass_MJ)
+    end
+    curve.absmags_corr = contrast_to_absmag.(curve.contrast_corr)
+    curve.masses_corr_226 = map(curve.absmags_corr) do absmag
+        table_interpolate(ATMO2020, :Age => 0.226, :MKO_Lp => absmag, :Mass_MJ)
+    end
+    curve.masses_corr_125 = map(curve.absmags_corr) do absmag
+        table_interpolate(ATMO2020, :Age => 0.125, :MKO_Lp => absmag, :Mass_MJ)
+    end
+end
+
+## plot best epoch as mass limits
+    py"""
+import proplot as pro
+fig, axs = pro.subplots(width="7.5in", height="4in")
+
+# curves
+axs.plot($(distances[2]), $(contrast_curves[2].masses_226), c="C0", label="226 Myr")
+axs.plot($(distances[2]), $(contrast_curves[2].masses_corr_226), c="C0", ls="--")
+axs.fill_between($(distances[2]), $(contrast_curves[2].masses_226), $(contrast_curves[2].masses_corr_226), color="C0", lw=0, alpha=0.1)
+
+axs.plot($(distances[2]), $(contrast_curves[2].masses_125), c="C1", label="125 Myr")
+axs.plot($(distances[2]), $(contrast_curves[2].masses_corr_125), c="C1", ls="--")
+axs.fill_between($(distances[2]), $(contrast_curves[2].masses_125), $(contrast_curves[2].masses_corr_125), color="C1", lw=0, alpha=0.1)
+
+# model mass limit
+xlims = axs.get_xlim()
+axs.hlines($(minimum(ATMO2020.Mass_MJ)), *xlims, color="k", alpha=0.3, linestyle=":", label="model mass limit")
+axs.hlines([1, 3, 5, 6, 7, 9, 10], *xlims, color="w", alpha=0.5, lw=0.75)
+
+# formatting
+axs.dualx(lambda x: x * $(SiriusB.parallax), label="separation [arcsec]")
+axs.legend(ncol=1)
+axs.format(
+    yscale=pro.LogScale(base=2),
+    xlabel="projected separation [AU]",
+    ylabel="mass [$M_J$] ",
+    grid=True,
+    yformatter="auto",
+    xlim=(None, 2),
+)
+
+# stability limit
+ylims=axs.get_ylim()
+axs.vlines(1.5, *ylims, color="k", alpha=0.4, ls="-.")
+mid = $log2(ylims[0] + ylims[1]) - 0.5
+# print(mid)
+axs.text(1.45, mid, "dynamical stability limit", color="k", alpha=0.5, va="center", ha="left", rotation="vertical")
+axs.set_ylim(ylims)
+
+
+fig.savefig($(figuredir("mass_curves.pdf")))
 pro.close(fig)
 """
