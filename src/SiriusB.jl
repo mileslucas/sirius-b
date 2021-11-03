@@ -7,12 +7,13 @@ using DelimitedFiles
 using Dierckx
 using FITSIO
 import ImageTransformations: center
-using SkyCoords
+using Printf
 using PyCall
+using SkyCoords
 
 export rootdir, datadir, srcdir, notebookdir, paperdir, figuredir, load_or_produce,
        parallactic_angles, gaussian_fit, gaussian_fit_offset, center, table_interpolate, ATMO2020,
-       contrast_to_dmag, distance_modulus
+       contrast_to_dmag, distance_modulus, SonoraSolar, SonoraMetalRich
 
 # constants associated with Sirius B
 const parallax = 374.48958852876103e-3 # arcsecond
