@@ -50,7 +50,7 @@ axs.format(
     xlabel="projected separation [AU]",
     ylabel="contrast ",
     grid=True,
-    yformatter="sci",
+    yformatter="log",
     xlim=(None, 2),
 )
 
@@ -81,69 +81,133 @@ pro.close(fig)
 
 for curve in contrast_curves
     curve.absmags = contrast_to_absmag.(curve.contrast)
-    curve.masses_226 = map(curve.absmags) do absmag
-        table_interpolate(ATMO2020, :Age => 0.226, :MKO_Lp => absmag, :Mass_MJ)
+    curve.masses_225 = map(curve.absmags) do absmag
+        table_interpolate(ATMO2020, :Age => 0.225, :MKO_Lp => absmag, :Mass_MJ)
     end
-    curve.masses_125 = map(curve.absmags) do absmag
-        table_interpolate(ATMO2020, :Age => 0.125, :MKO_Lp => absmag, :Mass_MJ)
+    curve.masses_126 = map(curve.absmags) do absmag
+        table_interpolate(ATMO2020, :Age => 0.126, :MKO_Lp => absmag, :Mass_MJ)
     end
     curve.absmags_corr = contrast_to_absmag.(curve.contrast_corr)
-    curve.masses_corr_226 = map(curve.absmags_corr) do absmag
-        table_interpolate(ATMO2020, :Age => 0.226, :MKO_Lp => absmag, :Mass_MJ)
+    curve.masses_corr_225 = map(curve.absmags_corr) do absmag
+        table_interpolate(ATMO2020, :Age => 0.225, :MKO_Lp => absmag, :Mass_MJ)
     end
-    curve.masses_corr_125 = map(curve.absmags_corr) do absmag
-        table_interpolate(ATMO2020, :Age => 0.125, :MKO_Lp => absmag, :Mass_MJ)
+    curve.masses_corr_126 = map(curve.absmags_corr) do absmag
+        table_interpolate(ATMO2020, :Age => 0.126, :MKO_Lp => absmag, :Mass_MJ)
+    end
+    # these try catch curves are because Sonora grid bottoms out
+    curve.masses_225_SonoraSolar = map(curve.absmags) do absmag
+        try
+            table_interpolate(SonoraSolar, :age_Gyr => 0.225, :Keck_Lp => absmag, :M_Mjup)
+        catch
+            NaN
+        end
+    end
+    curve.masses_126_SonoraSolar = map(curve.absmags) do absmag
+        try
+            table_interpolate(SonoraSolar, :age_Gyr => 0.126, :Keck_Lp => absmag, :M_Mjup)
+        catch
+            NaN
+        end
+    end
+    curve.masses_corr_225_SonoraSolar = map(curve.absmags_corr) do absmag
+        try
+            table_interpolate(SonoraSolar, :age_Gyr => 0.225, :Keck_Lp => absmag, :M_Mjup)
+        catch
+            NaN
+        end
+    end
+    curve.masses_corr_126_SonoraSolar = map(curve.absmags_corr) do absmag
+        try
+            table_interpolate(SonoraSolar, :age_Gyr => 0.126, :Keck_Lp => absmag, :M_Mjup)
+        catch
+            NaN
+        end
+    end
+    # metalrich
+    curve.masses_225_SonoraMetalRich = map(curve.absmags) do absmag
+        try
+            table_interpolate(SonoraMetalRich, :age_Gyr => 0.225, :Keck_Lp => absmag, :M_Mjup)
+        catch
+            NaN
+        end
+    end
+    curve.masses_126_SonoraMetalRich = map(curve.absmags) do absmag
+        try
+            table_interpolate(SonoraMetalRich, :age_Gyr => 0.126, :Keck_Lp => absmag, :M_Mjup)
+        catch
+            NaN
+        end
+    end
+    curve.masses_corr_225_SonoraMetalRich = map(curve.absmags_corr) do absmag
+        try
+            table_interpolate(SonoraMetalRich, :age_Gyr => 0.225, :Keck_Lp => absmag, :M_Mjup)
+        catch
+            NaN
+        end
+    end
+    curve.masses_corr_126_SonoraMetalRich = map(curve.absmags_corr) do absmag
+        try
+            table_interpolate(SonoraMetalRich, :age_Gyr => 0.126, :Keck_Lp => absmag, :M_Mjup)
+        catch
+            NaN
+        end
     end
 end
 
+
 ## plot best epoch as mass limits
-    py"""
+py"""
 import proplot as pro
-fig, axs = pro.subplots(width="7.5in", height="4in")
+fig, axs = pro.subplots(ncols=2, share=2, width="7.5in", height="4in")
+
+# atmo2020 curves
+axs[0].plot($(distances[2]), $(contrast_curves[2].masses_225), c="C2", label="225 Myr")
+axs[0].plot($(distances[2]), $(contrast_curves[2].masses_corr_225), c="C2", ls="--")
+axs[0].fill_between($(distances[2]), $(contrast_curves[2].masses_225), $(contrast_curves[2].masses_corr_225), color="C2", lw=0, alpha=0.1)
+
+axs[0].plot($(distances[2]), $(contrast_curves[2].masses_126), c="C3", label="126 Myr")
+axs[0].plot($(distances[2]), $(contrast_curves[2].masses_corr_126), c="C3", ls="--")
+axs[0].fill_between($(distances[2]), $(contrast_curves[2].masses_126), $(contrast_curves[2].masses_corr_126), color="C3", lw=0, alpha=0.1)
+
 
 # curves
-axs.plot($(distances[2]), $(contrast_curves[2].masses_226), c="C0", label="226 Myr")
-axs.plot($(distances[2]), $(contrast_curves[2].masses_corr_226), c="C0", ls="--")
-axs.fill_between($(distances[2]), $(contrast_curves[2].masses_226), $(contrast_curves[2].masses_corr_226), color="C0", lw=0, alpha=0.1)
+axs[1].plot($(distances[2]), $(contrast_curves[2].masses_225), c="C4", label="225 Myr")
+axs[1].plot($(distances[2]), $(contrast_curves[2].masses_126_SonoraSolar), c="C5", label="126 Myr")
+axs[1].plot($(distances[2]), $(contrast_curves[2].masses_225_SonoraMetalRich), c="C4", ls=":")
+axs[1].plot($(distances[2]), $(contrast_curves[2].masses_126_SonoraMetalRich), c="C5", ls=":")
 
-axs.plot($(distances[2]), $(contrast_curves[2].masses_125), c="C1", label="125 Myr")
-axs.plot($(distances[2]), $(contrast_curves[2].masses_corr_125), c="C1", ls="--")
-axs.fill_between($(distances[2]), $(contrast_curves[2].masses_125), $(contrast_curves[2].masses_corr_125), color="C1", lw=0, alpha=0.1)
 
-# model mass limit
-xlims = axs.get_xlim()
-axs.hlines($(minimum(ATMO2020.Mass_MJ)), *xlims, color="k", alpha=0.3, linestyle=":", label="model mass limit")
-axs.hlines([1, 3, 5, 6, 7, 9, 10], *xlims, color="w", alpha=0.5, lw=0.75)
+# # model mass limit
+[ax.hlines([1, 3, 5, 6, 7, 9, 10], *ax.get_xlim(), color="w", alpha=0.5, lw=0.75) for ax in axs]
 
 # formatting
-axs.dualx(lambda x: x * $(SiriusB.parallax), label="separation [arcsec]")
 axs.format(
+    abc=True,
     yscale=pro.LogScale(base=2),
     xlabel="projected separation [AU]",
     ylabel="companion mass [$M_J$] ",
     grid=True,
     yformatter="auto",
-    xlim=(None, 2),
+    xlim=(None, 1.5),
 )
+axs[0].format(title="ATMO2020")
+axs[1].format(title="Sonora Bobcat")
 
 # custom legend
-leg1 = axs.legend(ncol=1, loc="ur")
+axs.legend(ncol=1, loc="ur")
 elements = [
     Line2D([0], [0], color="k", alpha=0.6, label="Gaussian"),
     Line2D([0], [0], color="k", alpha=0.6, ls="--", label="Student-t"),
 ]
-axs.legend(handles=elements, queue=True, loc="uc")
-axs.add_artist(leg1)
-
-# stability limit
-ylims=axs.get_ylim()
-axs.vlines(1.5, *ylims, color="k", alpha=0.4, ls="-.")
-mid = $log2(ylims[0] + ylims[1]) - 0.5
-# print(mid)
-axs.text(1.45, mid, "dynamical stability limit", color="k", alpha=0.5, va="center", ha="left", rotation="vertical")
-axs.set_ylim(ylims)
-
+axs[0].legend(handles=elements, queue=True, loc="t")
+elements = [
+    Line2D([0], [0], color="k", alpha=0.6, label="[M/H] = 0.0"),
+    Line2D([0], [0], color="k", alpha=0.6, ls=":", label="[M/H] = +0.5"),
+]
+axs[1].legend(handles=elements, queue=True, loc="t")
 
 fig.savefig($(figuredir("mass_curves.pdf")))
 pro.close(fig)
 """
+
+
