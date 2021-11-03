@@ -69,18 +69,27 @@ fig.save($(figuredir("residuals.pdf")))
 
 py"""
 import proplot as pro
-fig, axs = pro.subplots(ncols=3, wspace="1em", figwidth="7.5in")
+fig, axs = pro.subplots(ncols=3, nrows=2, wspace="1em", figwidth="7.5in")
 
-axs[0].imshow($(sigs[1]), vmin=0, vmax=5)#, colorbar="r", colorbar_kw=dict(space=0))
-axs[0].text(6, 6, "median", color="w")
-axs[0].format(title="Epoch 2020-02-04")
-axs[1].imshow($(sigs[2]), vmin=0, vmax=5)#, colorbar="r", vmin=0, colorbar_kw=dict(space=0))
-axs[1].text(6, 6, "median", color="w")
-axs[1].format(title="Epoch 2020-11-21")
-m= axs[2].imshow($(sigs[3]), vmin=0, vmax=5)#, colorbar="r", vmin=0, colorbar_kw=dict(space=0))
-axs[2].text(6, 6, "annular PCA(2)", color="w")
-axs[2].format(title="Epoch 2020-11-28")
-fig.colorbar(m, loc="r", label="significance")
+axs[0, 0].imshow($(sigs[1]), vmin=0, vmax=5)#, colorbar="r", colorbar_kw=dict(space=0))
+axs[0, 0].text(6, 6, "median", color="w")
+axs[0, 0].format(title="Epoch 2020-02-04")
+axs[0, 1].imshow($(sigs[2]), vmin=0, vmax=5)#, colorbar="r", vmin=0, colorbar_kw=dict(space=0))
+axs[0, 1].text(6, 6, "median", color="w")
+axs[0, 1].format(title="Epoch 2020-11-21")
+m= axs[0, 2].imshow($(sigs[3]), vmin=0, vmax=5)#, colorbar="r", vmin=0, colorbar_kw=dict(space=0))
+axs[0, 2].text(6, 6, "annular PCA(2)", color="w")
+axs[0, 2].format(title="Epoch 2020-11-28")
+axs[0, 2].colorbar(m, loc="r", label="significance")
+
+
+axs[1, 0].imshow($(stims[1]), vmin=0, vmax=1)#, colorbar="r", colorbar_kw=dict(space=0))
+axs[1, 0].text(6, 6, "median", color="w")
+axs[1, 1].imshow($(stims[2]), vmin=0, vmax=1)#, colorbar="r", vmin=0, colorbar_kw=dict(space=0))
+axs[1, 1].text(6, 6, "median", color="w")
+m= axs[1, 2].imshow($(stims[3]), vmin=0, vmax=1)#, colorbar="r", vmin=0, colorbar_kw=dict(space=0))
+axs[1, 2].text(6, 6, "annular PCA(2)", color="w")
+axs[1, 2].colorbar(m, loc="r", label="STIM probability")
 
 axs.format(
     xticks=$tick_locs,
@@ -91,7 +100,8 @@ axs.format(
     ylabel="y [AU]",
 )
 
-fig.save($(figuredir("sig.pdf")))
+fig.save($(figuredir("detection_maps.pdf")))
+pro.close(fig)
 
 fig, axs = pro.subplots(ncols=3, wspace="1em", figwidth="7.5in")
 
@@ -116,33 +126,34 @@ axs.format(
 )
 
 fig.save($(figuredir("sig_threshold.pdf")))
+pro.close(fig)
 """
 
 py"""
 import proplot as pro
-fig, axs = pro.subplots(ncols=3, wspace="1em", figwidth="7.5in")
+# fig, axs = pro.subplots(ncols=3, wspace="1em", figwidth="7.5in")
 
-axs[0].imshow($(stims[1]), vmin=0, vmax=1)#, colorbar="r", colorbar_kw=dict(space=0))
-axs[0].text(6, 6, "median", color="w")
-axs[0].format(title="Epoch 2020-02-04")
-axs[1].imshow($(stims[2]), vmin=0, vmax=1)#, colorbar="r", vmin=0, colorbar_kw=dict(space=0))
-axs[1].text(6, 6, "median", color="w")
-axs[1].format(title="Epoch 2020-11-21")
-m= axs[2].imshow($(stims[3]), vmin=0, vmax=1)#, colorbar="r", vmin=0, colorbar_kw=dict(space=0))
-axs[2].text(6, 6, "annular PCA(2)", color="w")
-axs[2].format(title="Epoch 2020-11-28")
-fig.colorbar(m, loc="r", label="STIM probability")
+# axs[0].imshow($(stims[1]), vmin=0, vmax=1)#, colorbar="r", colorbar_kw=dict(space=0))
+# axs[0].text(6, 6, "median", color="w")
+# axs[0].format(title="Epoch 2020-02-04")
+# axs[1].imshow($(stims[2]), vmin=0, vmax=1)#, colorbar="r", vmin=0, colorbar_kw=dict(space=0))
+# axs[1].text(6, 6, "median", color="w")
+# axs[1].format(title="Epoch 2020-11-21")
+# m= axs[2].imshow($(stims[3]), vmin=0, vmax=1)#, colorbar="r", vmin=0, colorbar_kw=dict(space=0))
+# axs[2].text(6, 6, "annular PCA(2)", color="w")
+# axs[2].format(title="Epoch 2020-11-28")
+# fig.colorbar(m, loc="r", label="STIM probability")
 
-axs.format(
-    xticks=$tick_locs,
-    xticklabels=$tick_labs,
-    yticks=$tick_locs,
-    yticklabels=$tick_labs,
-    xlabel="x [AU]",
-    ylabel="y [AU]",
-)
+# axs.format(
+#     xticks=$tick_locs,
+#     xticklabels=$tick_labs,
+#     yticks=$tick_locs,
+#     yticklabels=$tick_labs,
+#     xlabel="x [AU]",
+#     ylabel="y [AU]",
+# )
 
-fig.save($(figuredir("stim.pdf")))
+# fig.save($(figuredir("stim.pdf")))
 
 fig, axs = pro.subplots(ncols=3, wspace="1em", figwidth="7.5in")
 
@@ -167,4 +178,5 @@ axs.format(
 )
 
 fig.save($(figuredir("stim_threshold.pdf")))
+pro.close(fig)
 """
