@@ -1,58 +1,64 @@
 function get_below(subtable, arg)
     _tab = Iterators.filter(r -> r[arg.first] ≤ arg.second, eachrow(subtable))
-    local y
-    try
-        y = maximum(r -> r[arg.first], _tab)
-    catch e
-        @debug "out of bounds" subtable arg
-        throw(e)
-    end
+    y = maximum(r -> r[arg.first], _tab)
     return filter(r -> r[arg.first] ≈ y, subtable)
 end
 
 function get_above(subtable, arg)
     _tab = Iterators.filter(r -> r[arg.first] > arg.second, eachrow(subtable))
-    local y
-    try
-        y = minimum(r -> r[arg.first], _tab)
-    catch e
-        @debug "out of bounds" subtable arg
-        throw(e)
-    end
+    y = minimum(r -> r[arg.first], _tab)
     return filter(r -> r[arg.first] ≈ y, subtable)
 end
 
 
 function table_interpolate(table, arg1, arg2, arg3)
     sub = copy(table)
+    try
+        sub0 = get_below(sub, arg1)
+        # isempty(sub0) == 0 && return NaN
+        x0 = x1 = sub0[1, arg1.first]
 
-    sub0 = get_below(sub, arg1)
-    x0 = x1 = sub0[1, arg1.first]
+        # check bounds
+        # bounds2 = extrema(sub0[!, arg2.first])
+        # if  arg2.second < bounds2[1] || arg2.second > bounds2[2]
+        #     @debug "out of bounds" sub0 arg2
+        #     return NaN
+        # end
 
-    tab0 = get_below(sub0, arg2)
-    y0 = tab0[1, arg2.first]
-    z0 = tab0[1, arg3]
+        tab0 = get_below(sub0, arg2)
+        y0 = tab0[1, arg2.first]
+        z0 = tab0[1, arg3]
 
-    tab1 = get_above(sub0, arg2)
-    y1 = tab1[1, arg2.first]
-    z1 = tab1[1, arg3]
+        tab1 = get_above(sub0, arg2)
+        y1 = tab1[1, arg2.first]
+        z1 = tab1[1, arg3]
 
-    sub1 = get_above(sub, arg1)
-    x2 = x3 = sub1[1, arg1.first]
+        sub1 = get_above(sub, arg1)
+        # isempty(sub1) == 0 && return NaN
+        x2 = x3 = sub1[1, arg1.first]
+        # bounds2 = extrema(sub1[!, arg2.first])
+        # if  arg2.second < bounds2[1] || arg2.second > bounds2[2]
+        #     @debug "out of bounds" sub1 arg2
+        #     return NaN
+        # end
 
-    tab2 = get_below(sub1, arg2)
-    y2 = tab2[1, arg2.first]
-    z2 = tab2[1, arg3]
 
-    tab3 = get_above(sub1, arg2)
-    y3 = tab3[1, arg2.first]
-    z3 = tab3[1, arg3]
+        tab2 = get_below(sub1, arg2)
+        y2 = tab2[1, arg2.first]
+        z2 = tab2[1, arg3]
 
-    xs = [x0, x1, x2, x3]
-    ys = [y0, y1, y2, y3]
-    zs = [z0, z1, z2, z3]
-    spl = Spline2D(xs, ys, zs, kx=1, ky=1)
-    return spl(arg1.second, arg2.second)
+        tab3 = get_above(sub1, arg2)
+        y3 = tab3[1, arg2.first]
+        z3 = tab3[1, arg3]
+
+        xs = [x0, x1, x2, x3]
+        ys = [y0, y1, y2, y3]
+        zs = [z0, z1, z2, z3]
+        spl = Spline2D(xs, ys, zs, kx=1, ky=1)
+        return spl(arg1.second, arg2.second)
+    catch
+        return NaN
+    end
 end
 
 #################################################

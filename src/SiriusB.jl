@@ -20,7 +20,7 @@ const parallax = 374.48958852876103e-3 # arcsecond
 const distance = inv(parallax) # pc
 const pxscale = 0.01 # arcseconds/px
 const auscale = pxscale / parallax # AU/px
-const appmag = 9.01 # Ks band from Bonnet-Biduad 2008
+const appmag = 9.1 # Lp band from Bonnet-Biduad 2008
 
 # path configuration
 rootdir(args...) = joinpath(@__DIR__(), "..", args...)

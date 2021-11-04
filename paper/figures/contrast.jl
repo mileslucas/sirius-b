@@ -72,7 +72,7 @@ mid = (ylims[0] + ylims[1]) / 40
 axs.text(1.45, mid, "dynamical stability limit", color="k", alpha=0.5, va="center", ha="left", rotation="vertical")
 axs.set_ylim(ylims)
 
-ax2 = axs.alty(reverse=True, label="abs. mag [$M^{Lp}$]")
+ax2 = axs.alty(reverse=True, label="abs. mag [$\mathrm{L^\prime}$]")
 ax2.plot($(distances[2]), $(contrast_to_absmag.(contrast_curves[2].contrast)), alpha=0)
 
 fig.savefig($(figuredir("contrast_curves.pdf")))
@@ -96,61 +96,29 @@ for curve in contrast_curves
     end
     # these try catch curves are because Sonora grid bottoms out
     curve.masses_225_SonoraSolar = map(curve.absmags) do absmag
-        try
-            table_interpolate(SonoraSolar, :age_Gyr => 0.225, :Keck_Lp => absmag, :M_Mjup)
-        catch
-            NaN
-        end
+        table_interpolate(SonoraSolar, :age_Gyr => 0.225, :Keck_Lp => absmag, :M_Mjup)
     end
     curve.masses_126_SonoraSolar = map(curve.absmags) do absmag
-        try
-            table_interpolate(SonoraSolar, :age_Gyr => 0.126, :Keck_Lp => absmag, :M_Mjup)
-        catch
-            NaN
-        end
+        table_interpolate(SonoraSolar, :age_Gyr => 0.126, :Keck_Lp => absmag, :M_Mjup)
     end
     curve.masses_corr_225_SonoraSolar = map(curve.absmags_corr) do absmag
-        try
-            table_interpolate(SonoraSolar, :age_Gyr => 0.225, :Keck_Lp => absmag, :M_Mjup)
-        catch
-            NaN
-        end
+        table_interpolate(SonoraSolar, :age_Gyr => 0.225, :Keck_Lp => absmag, :M_Mjup)
     end
     curve.masses_corr_126_SonoraSolar = map(curve.absmags_corr) do absmag
-        try
-            table_interpolate(SonoraSolar, :age_Gyr => 0.126, :Keck_Lp => absmag, :M_Mjup)
-        catch
-            NaN
-        end
+        table_interpolate(SonoraSolar, :age_Gyr => 0.126, :Keck_Lp => absmag, :M_Mjup)
     end
     # metalrich
     curve.masses_225_SonoraMetalRich = map(curve.absmags) do absmag
-        try
-            table_interpolate(SonoraMetalRich, :age_Gyr => 0.225, :Keck_Lp => absmag, :M_Mjup)
-        catch
-            NaN
-        end
+        table_interpolate(SonoraMetalRich, :age_Gyr => 0.225, :Keck_Lp => absmag, :M_Mjup)
     end
     curve.masses_126_SonoraMetalRich = map(curve.absmags) do absmag
-        try
-            table_interpolate(SonoraMetalRich, :age_Gyr => 0.126, :Keck_Lp => absmag, :M_Mjup)
-        catch
-            NaN
-        end
+        table_interpolate(SonoraMetalRich, :age_Gyr => 0.126, :Keck_Lp => absmag, :M_Mjup)
     end
     curve.masses_corr_225_SonoraMetalRich = map(curve.absmags_corr) do absmag
-        try
-            table_interpolate(SonoraMetalRich, :age_Gyr => 0.225, :Keck_Lp => absmag, :M_Mjup)
-        catch
-            NaN
-        end
+        table_interpolate(SonoraMetalRich, :age_Gyr => 0.225, :Keck_Lp => absmag, :M_Mjup)
     end
     curve.masses_corr_126_SonoraMetalRich = map(curve.absmags_corr) do absmag
-        try
-            table_interpolate(SonoraMetalRich, :age_Gyr => 0.126, :Keck_Lp => absmag, :M_Mjup)
-        catch
-            NaN
-        end
+        table_interpolate(SonoraMetalRich, :age_Gyr => 0.126, :Keck_Lp => absmag, :M_Mjup)
     end
 end
 
@@ -171,7 +139,7 @@ axs[0].fill_between($(distances[2]), $(contrast_curves[2].masses_126), $(contras
 
 
 # curves
-axs[1].plot($(distances[2]), $(contrast_curves[2].masses_225), c="C4", label="225 Myr")
+axs[1].plot($(distances[2]), $(contrast_curves[2].masses_225_SonoraSolar), c="C4", label="225 Myr")
 axs[1].plot($(distances[2]), $(contrast_curves[2].masses_126_SonoraSolar), c="C5", label="126 Myr")
 axs[1].plot($(distances[2]), $(contrast_curves[2].masses_225_SonoraMetalRich), c="C4", ls=":")
 axs[1].plot($(distances[2]), $(contrast_curves[2].masses_126_SonoraMetalRich), c="C5", ls=":")
