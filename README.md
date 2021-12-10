@@ -2,6 +2,8 @@
 
 **PI: Michael Bottom, Institute for Astronomy**
 
+This work has been accepted for publication in The Astronomical Journal as of December 3, 2021
+
 ## Attribution
 
 
