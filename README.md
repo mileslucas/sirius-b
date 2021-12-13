@@ -6,6 +6,8 @@ This work has been accepted for publication in the Astronomical Journal as of De
 
 ## Attribution
 
+[![arXiv](https://img.shields.io/badge/arXiv-2112.05234-brightgreen)](https://arxiv.org/abs/2112.05234v1)
+
 
 ## Data
 
