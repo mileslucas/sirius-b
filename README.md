@@ -1,4 +1,4 @@
-# Sirius B Data Reduction
+# An imaging search for post-main sequence planets of Sirius B
 
 **PI: Michael Bottom, Institute for Astronomy**
 
@@ -6,6 +6,7 @@ This work has been accepted for publication in the Astronomical Journal as of De
 
 ## Attribution
 
+[![ADS](https://img.shields.io/badge/ADS-2021arXiv211205234L-blue)](https://ui.adsabs.harvard.edu/abs/2021arXiv211205234L/abstract)
 [![arXiv](https://img.shields.io/badge/arXiv-2112.05234-brightgreen)](https://arxiv.org/abs/2112.05234v1)
 
 
